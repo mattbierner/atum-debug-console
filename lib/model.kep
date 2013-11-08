@@ -1,0 +1,112 @@
+package (
+    ConsoleViewModel)
+with
+    import 'knockout-2.2.1' ko,
+    
+    import 'atum/compute' compute,
+    
+    import 'sheut/debug' debug,
+    import 'sheut/run' run,
+    import 'sheut/step' step,
+    import 'sheut/operations/context' context,
+    import 'sheut/operations/reference' reference,
+    
+    import 'atum_debug_console/object_explorer' {AtumObject}
+in {
+
+var noop = \x -> x;
+    
+/* 
+ ******************************************************************************/
+var printBindings = function(d, record) {
+    var envRecord;
+    if (record.ref) {
+        var obj = run.extract(d, reference.getValue(record), null);
+        envRecord = obj.properties;
+    } else
+        envRecord = record;
+    return Object.keys(envRecord).reduce(function(p, c) {
+        p.push({'name': c, 'value': run.extract(d, reference.getValue(envRecord[c]), null)});
+        return p;
+    }, []);
+};
+
+
+var printFrame = function(d, lex) {
+    return {
+        'bindings': printBindings(d, lex.record)
+    };
+};
+
+var printEnvironments = function(d) {
+    var environments = [];
+    var environment = run.extract(d, context.environment, null);
+    do {
+        environments.push(printFrame(d, environment));
+        environment = run.extract(d, reference.getValue(environment.outer), null);
+    } while (environment);
+    return environments;
+};
+
+/* 
+ ******************************************************************************/
+ConsoleViewModel = function() {
+    var self = this;
+    
+    this.debug = ko.observable();
+    
+    this.output = ko.observableArray();
+    
+  
+    this.environments = ko.computed(function(){
+        return (self.debug() ?
+            printEnvironments(self.debug()) :
+            []);
+    });
+    
+    this.stack = [];/*ko.computed(function(){
+        return (self.debug() && self.debug().ctx.userData ? 
+            ko.utils.arrayMap(self.debug().ctx.userData.metadata.stack, function(x) {
+                return {
+                    'name': (x.func ? self.debug().run(object.get(x.func, 'name'), function(x){ return x.value; }) : '')
+                };
+            }) :
+            [])
+    });*/
+};
+
+ConsoleViewModel.prototype.finish = function() {
+    return this.debug(step.finish(this.debug()));
+};
+
+ConsoleViewModel.prototype.run = function() {
+    return this.debug(step.run(this.debug()));
+};
+
+ConsoleViewModel.prototype.stepOver = function() {
+    return this.debug(step.stepOver(this.debug()));
+};
+
+ConsoleViewModel.prototype.stepInto = function() {
+    return this.debug(step.step(this.debug()));
+};
+
+ConsoleViewModel.prototype.stepOut = function() {
+    return this.debug(step.stepOut(this.debug()));
+};
+
+ConsoleViewModel.prototype.push = function(value, ctx, error) {
+    var obj = new AtumObject(debug.debug(compute.just(value), ctx, noop, noop), value, ctx);
+    obj.getChildren({'key':'', 'value': ko.observable(obj) });
+    this.output.push({
+        'value': obj,
+        'error': !!error
+    });
+    return this;
+};
+
+ConsoleViewModel.prototype.stop = function() {
+    return this.debug(null);
+};
+
+}

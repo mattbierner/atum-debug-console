@@ -143,7 +143,7 @@
         }
         
         .ui-state-default .ui-icon {
-            background-image: url(resources/jquery-ui-1.10.3/css/ui-lightness/images/ui-icons_222222_256x240.png);
+            background-image: url(/resources/jquery-ui-1.10.3/css/ui-lightness/images/ui-icons_222222_256x240.png);
         }
         
         button {
@@ -369,9 +369,17 @@
     
     <script type="application/javascript" src="/resources/require.js"></script>
     
+    <script type="application/javascript" src="/resources/jquery-ui-1.10.3/js/jquery-1.9.1.js"></script>
+    <script type="application/javascript" src="/resources/jquery-ui-1.10.3/js/jquery-ui-1.10.3.custom.js"></script>
+    <script type="application/javascript" src="/resources/jquery.layout-latest.js"></script>
+    
+    <script type="application/javascript" src="/resources/codemirror-3.14/codemirror.js"></script>
+    <script type="application/javascript" src="/resources/codemirror-3.14/javascript.js"></script>
+    
     <script type="application/javascript">
         requirejs.config({
             paths: {
+                'atum_debug_console': '/lib',
                 'text': '/resources/text',
 
                 'atum': '/dependencies/atum/lib',
@@ -381,21 +389,16 @@
                 'nu': '/dependencies/nu/lib',
                 'ecma': '/dependencies/parse-ecma/lib',
                 'ecma_ast': '/dependencies/ecma-ast/lib',
+                'sheut': '/dependencies/sheut/lib',
                 
                 'knockout-2.2.1': '/resources/knockout-2.2.1'
             }
         });
+        require(['atum_debug_console/console'], function() {
+        
+        });
     </script>
-    
-    <script type="application/javascript" src="/resources/jquery-ui-1.10.3/js/jquery-1.9.1.js"></script>
-    <script type="application/javascript" src="/resources/jquery-ui-1.10.3/js/jquery-ui-1.10.3.custom.js"></script>
-    <script type="application/javascript" src="/resources/jquery.layout-latest.js"></script>
-    
-    <script type="application/javascript" src="/resources/codemirror-3.14/codemirror.js"></script>
-    <script type="application/javascript" src="/resources/codemirror-3.14/javascript.js"></script>
-    
-    
-    <script type="application/javascript" src="console.js"></script>
+
 </body>
     
 </html>
