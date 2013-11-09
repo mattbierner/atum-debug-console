@@ -4,6 +4,7 @@ with
     import 'knockout-2.2.1' ko,
     
     import 'atum/compute' compute,
+    import 'atum/operations/object' object,
     
     import 'sheut/debug' debug,
     import 'sheut/run' run,
@@ -14,86 +15,97 @@ with
     import 'atum_debug_console/object_explorer' {AtumObject}
 in {
 
-var noop = \x -> x;
+var map = \f, a -> Array.prototype.map.call(a, f);
     
-/* 
+var noop = \x -> x;
+
+/* Environment
  ******************************************************************************/
-var printBindings = function(d, record) {
-    var envRecord;
-    if (record.ref) {
-        var obj = run.extract(d, reference.getValue(record), null);
-        envRecord = obj.properties;
-    } else
-        envRecord = record;
-    return Object.keys(envRecord).reduce(function(p, c) {
-        p.push({'name': c, 'value': run.extract(d, reference.getValue(envRecord[c]), null)});
+var printBindings = \d, environment -> let
+    bindings = run.extract(d, context.getEnvironmentBindings(environment), [])
+in
+    bindings.reduce(\p, c -> {
+        p.push({
+            'name': c,
+            'value': run.extract(d, context.getEnvironmentBinding(environment, c), null)
+        });
         return p;
     }, []);
-};
 
-
-var printFrame = function(d, lex) {
-    return {
-        'bindings': printBindings(d, lex.record)
-    };
-};
+var printFrame = \d, lex -> ({
+    'bindings': printBindings(d, lex)
+});
 
 var printEnvironments = function(d) {
     var environments = [];
     var environment = run.extract(d, context.environment, null);
     do {
         environments.push(printFrame(d, environment));
-        environment = run.extract(d, reference.getValue(environment.outer), null);
+        environment = run.extract(d, context.getEnvironmentOuter(environment), null);
     } while (environment);
     return environments;
 };
 
-/* 
+/* Stack
+ ******************************************************************************/
+var StackFrame = function(name) {
+    this.name = name;
+};
+
+var createStackFrame = \d, frame ->
+    new StackFrame(frame.func ?
+        run.extract(d, object.get(frame.func, 'name'), '', \x -> x.value) :
+        '');
+
+var printStack = \d -> 
+    run.extract(
+        d,
+        context.stack,
+        [],
+        (map, (createStackFrame, d)));
+
+/* ConsoleViewModel
  ******************************************************************************/
 ConsoleViewModel = function() {
     var self = this;
     
-    this.debug = ko.observable();
+    self.debug = ko.observable();
     
-    this.output = ko.observableArray();
+    self.output = ko.observableArray();
     
-  
-    this.environments = ko.computed(function(){
-        return (self.debug() ?
+    self.location = ko.computed <|\->
+        (self.debug() ?
+            run.extract(self.debug(), context.location, null) :
+            []);
+
+    self.environments = ko.computed <|\->
+        (self.debug() ?
             printEnvironments(self.debug()) :
             []);
-    });
     
-    this.stack = [];/*ko.computed(function(){
-        return (self.debug() && self.debug().ctx.userData ? 
-            ko.utils.arrayMap(self.debug().ctx.userData.metadata.stack, function(x) {
-                return {
-                    'name': (x.func ? self.debug().run(object.get(x.func, 'name'), function(x){ return x.value; }) : '')
-                };
-            }) :
-            [])
-    });*/
+    self.stack = ko.computed <|\->
+        (self.debug() ?
+            printStack(self.debug()) :
+            []);
 };
 
-ConsoleViewModel.prototype.finish = function() {
-    return this.debug(step.finish(this.debug()));
-};
+ConsoleViewModel.prototype.finish = \() ->
+    this.debug(step.finish(this.debug()));
 
-ConsoleViewModel.prototype.run = function() {
-    return this.debug(step.run(this.debug()));
-};
+ConsoleViewModel.prototype.run = \() ->
+    this.debug(step.run(this.debug()));
 
-ConsoleViewModel.prototype.stepOver = function() {
-    return this.debug(step.stepOver(this.debug()));
-};
+ConsoleViewModel.prototype.stepOver = \() ->
+    this.debug(step.stepOver(this.debug()));
 
-ConsoleViewModel.prototype.stepInto = function() {
-    return this.debug(step.step(this.debug()));
-};
+ConsoleViewModel.prototype.stepInto = \() ->
+    this.debug(step.step(this.debug()));
 
-ConsoleViewModel.prototype.stepOut = function() {
-    return this.debug(step.stepOut(this.debug()));
-};
+ConsoleViewModel.prototype.stepOut = \() ->
+    this.debug(step.stepOut(this.debug()));
+
+ConsoleViewModel.prototype.stop = \() ->
+    this.debug(null);
 
 ConsoleViewModel.prototype.push = function(value, ctx, error) {
     var obj = new AtumObject(debug.debug(compute.just(value), ctx, noop, noop), value, ctx);
@@ -103,10 +115,6 @@ ConsoleViewModel.prototype.push = function(value, ctx, error) {
         'error': !!error
     });
     return this;
-};
-
-ConsoleViewModel.prototype.stop = function() {
-    return this.debug(null);
 };
 
 }

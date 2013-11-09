@@ -261,6 +261,10 @@
             padding: 0;
         }
         
+        .active-line {
+            background: rgba(0, 183, 235, 0.25);
+        }
+        
         
     /* CodeMirror*/
         .CodeMirror {
@@ -338,7 +342,8 @@
                         <button id='step-out-button' title='step out'><span class="ui-icon ui-icon-arrowstop-1-n"></span></button>
                     </div>
                 </div>
-            </div><div class='output code'>
+            </div>
+            <div class='output code'>
                 <ul id='output-console' data-bind="template: { name: 'output-template', foreach: output }"></ul>
                 <div class='output-interactive cf'>
                     <div id='output-interactive-textarea'></div>

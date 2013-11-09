@@ -18,7 +18,6 @@ var AtumChild = function(key, value) {
     self.value = ko.observable(value);
 };
 
-
 AtumObject = function(d, x, ctx) {
     var self = this;
     var value = run.extract(d, reference.getValue(x), null);

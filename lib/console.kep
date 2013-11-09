@@ -1,15 +1,11 @@
 package (X)
 with 
     import 'knockout-2.2.1' ko,
-    import 'atum/interpret' interpret,
-    import 'atum/compute' compute,
-    import 'atum/debug/debugger' atum_debugger,
+    
     import 'sheut/debug' debug,
     import 'sheut/step' step,
     import 'sheut/run' run,
-    import 'sheut/operations/reference' reference,
     import 'sheut/operations/evaluation' evaluate,
-    import 'sheut/operations/context' context,
     
     import 'atum_debug_console/model' atum_debug_model
 in {
@@ -18,47 +14,9 @@ static CodeMirror;
 static document;
 static $;
 
-var map = Function.prototype.call.bind(Array.prototype.map);
-var reduce = Function.prototype.call.bind(Array.prototype.reduce);
-
-var get = \p, c -> p[c];
-
 var id = \x -> x;
 
 var model;
-
-/* 
- ******************************************************************************/
-var printBindings = function(d, record) {
-    var envRecord;
-    if (record.ref) {
-        var obj = run.extract(d, reference.getValue(record), null);
-        envRecord = obj.properties;
-    } else
-        envRecord = record;
-    return Object.keys(envRecord).reduce(function(p, c) {
-        p.push({'name': c, 'value': run.extract(d, reference.getValue(envRecord[c]), null)});
-        return p;
-    }, []);
-};
-
-
-var printFrame = function(d, lex) {
-    return {
-        'bindings': printBindings(d, lex.record)
-    };
-};
-
-var printEnvironments = function(d) {
-    var environments = [];
-    var environment = run.extract(d, context.environment, null);
-    do {
-        environments.push(printFrame(d, environment));
-        environment = run.extract(d, reference.getValue(environment.outer), null);
-    } while (environment);
-    return environments;
-};
-
 
 /* 
  ******************************************************************************/
@@ -70,13 +28,14 @@ var errorOut = {
     'write': \x, ctx -> model.push(x, ctx, true)
 };
 
-
 /* Code Mirror
  ******************************************************************************/
-var doc = CodeMirror(document.getElementById('input'), {
+var cm = CodeMirror(document.getElementById('input'), {
     'mode': 'javascript',
     'lineNumbers': true
-}).doc;
+});
+
+var doc = cm.doc;
 
 var interactive = CodeMirror(document.getElementById('output-interactive-textarea'), {
     'mode': 'javascript',
@@ -84,8 +43,8 @@ var interactive = CodeMirror(document.getElementById('output-interactive-textare
 });
 var interactiveDoc = interactive.doc;
 
-
 interactive.setSize(null, 20);
+
 interactive.on('beforeChange', function(instance, change) {
     change.update(change.from, change.to, [change.text.join("").replace(`\n`g, "")]);
     return true;
@@ -106,6 +65,17 @@ interactive.on('keyHandled', function(instance, name, event) {
 model = new atum_debug_model.ConsoleViewModel();
 
 ko.applyBindings(model);
+
+model.location.subscribe(\current -> {
+    if (current && current.start)
+        cm.removeLineClass(current.start.line - 1, 'background', 'active-line');
+}, null, 'beforeChange');
+
+model.location.subscribe(\x -> {
+    if (x)
+       cm.addLineClass(x.start.line - 1, 'background', 'active-line');
+});
+
 
 $(function(){
     var stopButton = $('button#stop-button'),
@@ -138,7 +108,7 @@ $(function(){
         .button()
         .click(function () {
             var input = doc.getValue();
-            //try {
+            try {
                 model.debug(debug.beginInput(input,
                     out.write,
                     errorOut.write));
@@ -149,9 +119,9 @@ $(function(){
                 stepIntoButton.attr("disabled", false);
                 stepOutButton.attr("disabled", false);
 
-           // } catch (e) {
-             //   $('.ParseError').text(e);
-           // }
+            } catch (e) {
+                $('.ParseError').text(e);
+            }
         });
     
     stopButton
