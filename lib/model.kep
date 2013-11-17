@@ -16,7 +16,7 @@ with
 in {
 
 var map = \f, a -> Array.prototype.map.call(a, f);
-    
+
 var noop = \x -> x;
 
 /* Environment
@@ -53,9 +53,8 @@ var StackFrame = function(name) {
 };
 
 var createStackFrame = \d, frame ->
-    new StackFrame(frame.func ?
-        run.extract(d, object.get(frame.func, 'name'), '', \x -> x.value) :
-        '');
+    new StackFrame(
+        run.extract(d, context.getStackFrameName(frame), '', \x -> x.value));
 
 var printStack = \d -> 
     run.extract(
@@ -115,6 +114,10 @@ ConsoleViewModel.prototype.push = function(value, ctx, error) {
         'error': !!error
     });
     return this;
+};
+
+ConsoleViewModel.prototype.selectFrame = \item -> {
+    debugger;
 };
 
 }

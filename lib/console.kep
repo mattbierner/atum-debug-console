@@ -76,7 +76,8 @@ model.location.subscribe(\x -> {
        cm.addLineClass(x.start.line - 1, 'background', 'active-line');
 });
 
-
+/* 
+ ******************************************************************************/
 $(function(){
     var stopButton = $('button#stop-button'),
         runButton = $('button#run-button'),
@@ -90,15 +91,19 @@ $(function(){
     $('button#eval-button')
         .button()
         .click(function(e){
-            var input = doc.getValue();
-            step.finish(debug.beginInput(input,
-                out.write,
-                errorOut.write));
-            $('.object-browser')
-                .accordion({
-                    'collapsible': true,
-                    'animate': 100
-                });
+            try {
+                var input = doc.getValue();
+                step.finish(debug.beginInput(input,
+                    out.write,
+                    errorOut.write));
+                $('.object-browser')
+                    .accordion({
+                        'collapsible': true,
+                        'animate': 100
+                    });
+            } catch (e) {
+                errorOut.write(e);
+            }
         });
     
     $('.object-browser')
@@ -115,12 +120,13 @@ $(function(){
                 
                 stopButton.attr("disabled", false);
                 runButton.attr("disabled", false);
+                stepButton.attr("disabled", false);
                 stepOverButton.attr("disabled", false);
                 stepIntoButton.attr("disabled", false);
                 stepOutButton.attr("disabled", false);
 
             } catch (e) {
-                $('.ParseError').text(e);
+                errorOut.write(e);
             }
         });
     
@@ -146,6 +152,7 @@ $(function(){
         .button()
         .attr("disabled", true)
         .click(function(e){
+            debugger;
             model.stepOver();
         });
     

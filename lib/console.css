@@ -1,0 +1,331 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:300italic,400italic,700italic,100,300,400,700);
+
+/* -----------------------------------------------------------------------------
+    Page
+ ---------------------------------------------------------------------------- */
+html,
+body {
+    min-height: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: black;
+    
+    min-width: 800px;
+    min-height: 400px;
+}
+
+body header {
+    box-sizing: border-box;
+    height: 26px;
+    border-bottom: 1px solid lightgray;
+}
+
+#page-title {
+    margin: 0 0.35em;
+    padding: 0;
+    font-size: 1.6em;
+}
+
+#container {
+    box-sizing: border-box;
+    height: 100%;
+   
+    margin-top: -26px;
+    padding-top: 26px;
+}
+
+
+/* -----------------------------------------------------------------------------
+    Panes
+ ---------------------------------------------------------------------------- */
+.ui-layout-pane {
+    border: none;
+}
+
+.ui-layout-resizer {
+    border: none;
+}
+
+.pane {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    width: auto;
+}
+
+.pane-header {
+    border-bottom: 1px solid red;
+}
+
+.pane-title {
+    font-size: 1.2em;
+    margin: 0 0.25em;
+    font-weight: 400;
+    padding: 0 0.25em;
+}
+
+/* -----------------------------------------------------------------------------
+    Code Mirror
+ ---------------------------------------------------------------------------- */
+.CodeMirror {
+    box-sizing: border-box;
+
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* -----------------------------------------------------------------------------
+    Workspace
+ ---------------------------------------------------------------------------- */
+#workspace {
+    width: auto;
+    border-bottom: 1px solid gray;
+    position: relative;
+}
+
+#workspace #editor {
+    height: 60%;
+}
+
+#workspace #console {
+    position: relative;
+    height: 40%;
+}
+
+/* -----------------------------------------------------------------------------
+    Workspace -> Editor
+ ---------------------------------------------------------------------------- */
+ #workspace #input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 19px;
+}
+
+#workspace #input .CodeMirror {
+    height: 100%;
+}
+
+#workspace #input .CodeMirror-scroll {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* -----------------------------------------------------------------------------
+    Workspace -> Console
+ ---------------------------------------------------------------------------- */
+#console {
+    box-sizing: border-box;
+    border-top: 1px solid lightgray;
+    
+    overflow: hidden;
+}
+ 
+#console .controls {
+    box-sizing: border-box;
+    z-index: 500;
+    
+    position: absolute;
+    top: 0;
+    
+    width: 100%;
+    height: 18px;
+    
+    border-bottom: 1px solid lightgray;
+    background: white;
+}
+
+#console #output {
+    position: relative;
+    overflow: scroll;
+
+    height: 100%;
+    max-height: 100%;
+    
+    padding-top: 18px;
+}
+
+#console #output > ul {
+    margin: 0;
+    padding: 0;
+    padding-top: 0.2em;
+}
+
+#console .run-buttons > *,
+#console .debug-buttons > * {
+    display: block;
+    padding: 0 1em;
+    font-size: 0.90em;
+}
+
+#console .run-buttons {
+    float: right;
+}
+
+#workspace .run-buttons > * {
+    float: right;
+    border-left: 1px solid gray;
+}
+
+#workspace .debug-buttons {
+    float: left;
+}
+#workspace .debug-buttons > * {
+    float: left;
+    border-right: 1px solid gray;
+}
+
+/* -----------------------------------------------------------------------------
+    Workspace -> Console -> Interactive
+ ---------------------------------------------------------------------------- */
+
+#interactive {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    border-top: 1px solid red;
+}
+
+.output-interactive-textarea {
+    overflow-y: hidden;
+    background: red;
+}
+
+.output-interactive-textarea .CodeMirror-hscrollbar {
+    display: none;
+}
+/* -----------------------------------------------------------------------------
+    
+ ---------------------------------------------------------------------------- */
+
+.ui-widget {
+    font:inherit;
+    }
+
+.ui-corner-all {
+    border-radius: 0;
+}
+
+.ui-button {
+    color: black;
+    border: 0;
+    background: transparent;
+    margin: 0;
+    border: 0;
+}
+
+.ui-button.ui-state-hover .ui-icon {
+    opacity: 0.50;
+}
+
+.ui-button-text-only .ui-button-text {
+    padding: 0.1em 0.25em;
+}
+
+.ui-state-default .ui-icon {
+    background-image: url(/resources/jquery-ui-1.10.3/css/ui-lightness/images/ui-icons_222222_256x240.png);
+}
+
+.output-error {
+    color: red;
+}
+.output-value {
+
+}
+
+
+/* Environments */
+.environments {
+    margin: 0;
+    padding: 0;
+}
+
+.environment {
+    list-style: none;
+    border-bottom: 1px solid gray;
+}
+
+.binding-list {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid black;
+}
+
+.binding-list > .binding {
+    margin-bottom: 0.25em;
+}
+
+.binding {
+    list-style: none;
+    font-size: 0.90em;
+    font-weight: normal;
+    line-height: 100%;
+}
+
+.binding .binding-name {
+    font-weight: bold;
+}
+
+.binding .binding-value {
+    margin-left: 0.15em;
+}
+
+
+#output-console {
+    box-sizing: border-box;
+    height: 100%;
+    padding-bottom: 18px;
+    overflow-y: scroll;
+    list-style: none;
+    margin: 0;
+}
+
+
+.object-browser {
+    font-size: 1em;
+}
+
+.object-children > .object-value {
+    display: inline-block;
+}
+
+.ui-accordion-header,
+.ui-accordion .ui-accordion-header {
+    color: black;
+    border: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.ui-accordion  .ui-accordion-content {
+    border: none;
+    background: none;
+    margin: 0;
+    margin-left: 1em;
+    padding: 0;
+}
+
+.active-line {
+    background: rgba(0, 183, 235, 0.25);
+}
+
+
+
+
+/* From http://nicolasgallagher.com/micro-clearfix-hack/ */
+.cf:before,
+.cf:after {
+    content: " ";
+    display: table;
+}
+
+.cf:after {
+    clear: both;
+}
