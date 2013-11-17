@@ -29,13 +29,11 @@
     
     <script type="text/html" id="object-template">
         <div class='object-browser'>
-            <span class='object-value' data-bind="text: value"></span>
-            <ul class='object-children' data-bind="foreach: children">
-                <li>
-                    <a class='child-key' data-bind="text: key, click: $parent.getChildren"></a>
-                    <div data-bind="template: { name: 'object-template', data: value}"></div>
-                </li>
-            </ul>
+            <h3 class='object-value' data-bind="text: value"></h3>
+            <div data-bind="foreach: children">
+                <a class='child-key' data-bind="text: key, click: $parent.getChildren"></a>
+                <div data-bind="template: { name: 'object-template', data: value}"></div>
+            </div>
         </div>
     </script>
     

@@ -8,7 +8,7 @@ with
 in {
 
 static $;
-    
+
 /* 
  ******************************************************************************/
 var AtumChild = function(key, value) {
@@ -21,7 +21,7 @@ var AtumChild = function(key, value) {
 AtumObject = function(d, x, ctx) {
     var self = this;
     
-    var value = ctx ? run.extract(d, reference.getValue(x), null) : x;
+    var value = (ctx ? run.extract(d, reference.getValue(x), null) : x);
     
     self.value = ko.observable(value);
     self.children = ko.observableArray();
@@ -36,7 +36,7 @@ AtumObject = function(d, x, ctx) {
                 });
             }
         }
-        $('.object-browser').accordion()
+        $('.object-browser')
             .accordion('refresh');
     };
 };

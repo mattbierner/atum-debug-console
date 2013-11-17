@@ -1,5 +1,5 @@
-package (X)
-with 
+package ()
+with
     import 'knockout-2.2.1' ko,
     
     import 'sheut/debug' debug,
@@ -20,12 +20,30 @@ var model;
 
 /* 
  ******************************************************************************/
+var updateAccordions = \() ->
+    $('.object-browser')
+        .accordion({
+            'collapsible': true,
+            'animate': 100,
+            'heightStyle': "content"
+        });
+
 var out = {
-    'write': \x, ctx -> model.push(x, ctx, false)
+    'write': \x, ctx ->  {
+        model.push(x, ctx, false);
+        updateAccordions();
+        $('#output > ul')
+            .scrollTop($('#output > ul')[0].scrollHeight);
+    }
 };
 
 var errorOut = {
-    'write': \x, ctx -> model.push(x, ctx, true)
+    'write': \x, ctx -> {
+        model.push(x, ctx, true);
+        updateAccordions();
+        $('#output > ul')
+            .scrollTop($('#output > ul')[0].scrollHeight);
+    }
 };
 
 /* Code Mirror
@@ -53,10 +71,19 @@ interactive.on('beforeChange', function(instance, change) {
 interactive.on('keyHandled', function(instance, name, event) {
     if (name === 'Enter') {
         var input = interactiveDoc.getValue();
-        step.finish(run.evaluate(model.debug(),
-            evaluate.evaluateInput(input),
-            out.write,
-            errorOut.write));
+        if (model.debug()) {
+            step.finish(
+                run.evaluate(model.debug(),
+                evaluate.evaluateInput(input),
+                out.write,
+                errorOut.write));
+        } else {
+            step.finish(
+                debug.beginInput(
+                    input,
+                    out.write,
+                    errorOut.write));
+        }
     }
 });
 
@@ -86,48 +113,34 @@ $(function(){
         stepIntoButton = $('button#step-into-button'),
         stepOverButton = $('button#step-over-button');
 
-    $('#container').layout();
-
+    $('#container')
+        .layout();
+    
     $('button#eval-button')
         .button()
-        .click(function(e){
-            try {
-                var input = doc.getValue();
-                step.finish(debug.beginInput(input,
+        .click(\e -> {
+            var input = doc.getValue();
+            step.finish(
+                debug.beginInput(input,
                     out.write,
                     errorOut.write));
-                $('.object-browser')
-                    .accordion({
-                        'collapsible': true,
-                        'animate': 100
-                    });
-            } catch (e) {
-                errorOut.write(e);
-            }
         });
-    
-    $('.object-browser')
-        .accordion();
     
     $('button#debug-button')
         .button()
-        .click(function () {
+        .click(\e -> {
             var input = doc.getValue();
-            try {
-                model.debug(debug.beginInput(input,
-                    out.write,
-                    errorOut.write));
-                
-                stopButton.attr("disabled", false);
-                runButton.attr("disabled", false);
-                stepButton.attr("disabled", false);
-                stepOverButton.attr("disabled", false);
-                stepIntoButton.attr("disabled", false);
-                stepOutButton.attr("disabled", false);
-
-            } catch (e) {
-                errorOut.write(e);
-            }
+            
+            model.debug(debug.beginInput(input,
+                out.write,
+                errorOut.write));
+            
+            stopButton.attr("disabled", false);
+            runButton.attr("disabled", false);
+            stepButton.attr("disabled", false);
+            stepOverButton.attr("disabled", false);
+            stepIntoButton.attr("disabled", false);
+            stepOutButton.attr("disabled", false);
         });
     
     stopButton
@@ -141,18 +154,13 @@ $(function(){
         .button()
         .attr("disabled", true)
         .click(function(e) {
-            if (model.debug()) {
-                model.run();
-            } else {
-                model.finish();
-            }
+            model.run();
         });
     
     stepButton
         .button()
         .attr("disabled", true)
         .click(function(e){
-            debugger;
             model.stepOver();
         });
     

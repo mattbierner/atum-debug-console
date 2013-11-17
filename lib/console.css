@@ -13,7 +13,7 @@ body {
 
 body {
     font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     color: black;
     
     min-width: 800px;
@@ -40,6 +40,9 @@ body header {
     padding-top: 26px;
 }
 
+.code {
+    font-family:  monospace;
+}
 
 /* -----------------------------------------------------------------------------
     Panes
@@ -152,9 +155,21 @@ body header {
 }
 
 #console #output > ul {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    max-height: 100%;
+
+    overflow: scroll;
+
     margin: 0;
     padding: 0;
-    padding-top: 0.2em;
+    padding-top:18px;
+    padding-bottom: 38px
+}
+
+#console #output li {
+    width: 100%;
 }
 
 #console .run-buttons > *,
@@ -181,15 +196,21 @@ body header {
     border-right: 1px solid gray;
 }
 
+#console #output .output-value {
+    width: 100%;
+    border-top: 1px solid lightgray;
+    padding: 0 0.2em;
+}
+
+
 /* -----------------------------------------------------------------------------
     Workspace -> Console -> Interactive
  ---------------------------------------------------------------------------- */
-
 #interactive {
     position: absolute;
     width: 100%;
     bottom: 0;
-    border-top: 1px solid red;
+    border-top: 1px solid lightgray;
 }
 
 .output-interactive-textarea {
