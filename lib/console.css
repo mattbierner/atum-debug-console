@@ -20,13 +20,13 @@ body {
 }
 
 body,
-div {
+.ui-widget {
     font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 300;
 }
 
 .code,
-.CodeMirror,
-.CodeMirror div {
+.CodeMirror { 
     font-family:  monospace;
 }
 
@@ -236,9 +236,6 @@ body header {
     
  ---------------------------------------------------------------------------- */
 
-.ui-widget {
-    font:inherit;
-}
 
 .ui-corner-all {
     border-radius: 0;
