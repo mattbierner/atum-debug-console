@@ -12,12 +12,22 @@ body {
 }
 
 body {
-    font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
     color: black;
     
     min-width: 800px;
     min-height: 400px;
+}
+
+body,
+div {
+    font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.code,
+.CodeMirror,
+.CodeMirror div {
+    font-family:  monospace;
 }
 
 body header {
@@ -38,10 +48,6 @@ body header {
    
     margin-top: -26px;
     padding-top: 26px;
-}
-
-.code {
-    font-family:  monospace;
 }
 
 /* -----------------------------------------------------------------------------
@@ -155,6 +161,8 @@ body header {
 }
 
 #console #output > ul {
+    box-sizing: border-box;
+
     position: absolute;
     bottom: 0px;
     width: 100%;
@@ -202,6 +210,9 @@ body header {
     padding: 0 0.2em;
 }
 
+#console #output ul > li.output-error > div > div > .ui-accordion-header {
+    color: red;
+}
 
 /* -----------------------------------------------------------------------------
     Workspace -> Console -> Interactive
@@ -227,7 +238,7 @@ body header {
 
 .ui-widget {
     font:inherit;
-    }
+}
 
 .ui-corner-all {
     border-radius: 0;
@@ -253,12 +264,7 @@ body header {
     background-image: url(/resources/jquery-ui-1.10.3/css/ui-lightness/images/ui-icons_222222_256x240.png);
 }
 
-.output-error {
-    color: red;
-}
-.output-value {
 
-}
 
 
 /* Environments */
