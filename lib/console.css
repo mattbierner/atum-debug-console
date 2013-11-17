@@ -210,7 +210,7 @@ body header {
     padding: 0 0.2em;
 }
 
-#console #output ul > li.output-error > div > div > .ui-accordion-header {
+#console #output .output-error > div > div > .ui-accordion-header {
     color: red;
 }
 
