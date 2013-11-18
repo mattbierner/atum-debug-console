@@ -7,7 +7,8 @@ with
     import 'sheut/run' run,
     import 'sheut/operations/evaluation' evaluate,
     
-    import 'atum_debug_console/model' atum_debug_model
+    import 'atum_debug_console/model' atum_debug_model,
+    import 'atum_debug_console/object_explorer' object_explorer
 in {
 
 static CodeMirror;
@@ -32,8 +33,8 @@ var updateAccordions = \() ->
             })));
 
 var out = {
-    'write': \x, ctx ->  {
-        model.push(x, ctx, false);
+    'write': \x, ctx -> {
+        model.pushResult(x, ctx, false);
         updateAccordions();
         $('#output > ul')
             .scrollTop($('#output > ul')[0].scrollHeight);
@@ -42,7 +43,7 @@ var out = {
 
 var errorOut = {
     'write': \x, ctx -> {
-        model.push(x, ctx, true);
+        model.pushResult(x, ctx, true);
         updateAccordions();
         $('#output > ul')
             .scrollTop($('#output > ul')[0].scrollHeight);
@@ -74,18 +75,31 @@ interactive.on('beforeChange', function(instance, change) {
 interactive.on('keyHandled', function(instance, name, event) {
     if (name === 'Enter') {
         var input = interactiveDoc.getValue();
-        if (model.debug()) {
-            run.evaluate(
-                model.debug(),
-                evaluate.evaluateInput(input),
-                out.write,
-                errorOut.write);
-        } else {
-            step.finish(
-                debug.beginInput(
-                    input,
-                    out.write,
-                    errorOut.write));
+        with
+            writeOut = \x, ctx -> {
+                interactive.setValue('');
+                model.pushInput(input);
+                out.write(x, ctx);
+            },
+            writeError = \x, ctx -> {
+                interactive.setValue('');
+                model.pushInput(input);
+                errorOut.write(x, ctx);
+            }
+        in {
+            if (model.debug()) {
+                run.evaluate(
+                    model.debug(),
+                    evaluate.evaluateInput(input),
+                    writeOut,
+                    writeError);
+            } else {
+                step.finish(
+                    debug.beginInput(
+                        input,
+                        writeOut,
+                        writeError));
+            }
         }
     }
 });
@@ -105,8 +119,6 @@ model.location.subscribe(\x -> {
     if (x && x.start)
        cm.addLineClass(x.start.line - 1, 'background', 'active-line');
 });
-
-
 
 /* 
  ******************************************************************************/

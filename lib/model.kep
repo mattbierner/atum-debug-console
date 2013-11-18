@@ -1,7 +1,12 @@
 package (
+    Result,
+    Input,
+    
     ConsoleViewModel)
 with
     import 'knockout-2.2.1' ko,
+    
+    import 'amulet/record' record,
     
     import 'atum/compute' compute,
     import 'atum/operations/object' object,
@@ -12,12 +17,23 @@ with
     import 'sheut/operations/context' context,
     import 'sheut/operations/reference' reference,
     
-    import 'atum_debug_console/object_explorer' {AtumObject}
+    import 'atum_debug_console/object_explorer' object_explorer{AtumObject}
 in {
 
 var map = \f, a -> Array.prototype.map.call(a, f);
 
 var noop = \x -> x;
+
+/* Console
+ ******************************************************************************/
+Result = record.declare(null, [
+    'value',
+    'error']);
+Result.prototype.type = 'result';
+
+Input = record.declare(null, [
+    'input']);
+Input.prototype.type = 'input';
 
 /* Environment
  ******************************************************************************/
@@ -45,6 +61,7 @@ var printEnvironments = function(d) {
     } while (environment);
     return environments;
 };
+
 
 /* Stack
  ******************************************************************************/
@@ -106,15 +123,15 @@ ConsoleViewModel.prototype.stepOut = \() ->
 ConsoleViewModel.prototype.stop = \() ->
     this.debug(null);
 
-ConsoleViewModel.prototype.push = function(value, ctx, error) {
-    var obj = new AtumObject(debug.debug(compute.just(value), ctx, noop, noop), value);
-    obj.getChildren({'key':'', 'value': ko.observable(obj) });
-    this.output.push({
-        'value': obj,
-        'error': !!error
-    });
-    return this;
-};
+ConsoleViewModel.prototype.pushResult = \value, ctx, error ->
+    this.output.push(
+        Result.create(object_explorer.create(value, ctx), error));
+
+
+ConsoleViewModel.prototype.pushInput = \input ->
+    this.output.push(
+        Input.create(input));
+
 
 ConsoleViewModel.prototype.selectFrame = \item -> {
     this.environment();

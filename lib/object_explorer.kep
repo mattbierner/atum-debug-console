@@ -1,8 +1,12 @@
 package (
-    AtumObject)
+    AtumObject,
+    create)
 with
     import 'knockout-2.2.1' ko,
     
+    import 'atum/compute' {just},
+    
+    import 'sheut/debug' debug,
     import 'sheut/run' run,
     import 'sheut/fun' {map},
     import 'sheut/operations/object' object,
@@ -10,6 +14,8 @@ with
 in {
 
 static $;
+
+var noop = \->{};
 
 /* 
  ******************************************************************************/
@@ -49,5 +55,11 @@ AtumObject = function(d, x) {
     };
 };
 
+
+create = \value, ctx -> {
+    var obj = new AtumObject(debug.debug(just(value), ctx, noop, noop), value);
+    obj.getChildren({'key':'', 'value': ko.observable(obj) });
+    return obj;
+};
 
 }
