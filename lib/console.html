@@ -29,7 +29,7 @@
     
     <script type="text/html" id="object-child-template">
         <div class='object-browser'>
-            <h3 class='object-value' data-bind="click: value().getChildren.bind(value()), css: { 'object-leaf': !value().isObject(), 'ui-state-disabled': !value().isObject() }">
+            <h3 class='object-value' data-bind="click: value().getChildren.bind(value()), css: { 'ui-state-disabled': !value().isObject() }">
                 <span class='child-key-label' data-bind='text: key'></span>
                 <span class='child-value-label' data-bind='text: value().value'></span>
             </h3>
@@ -41,7 +41,7 @@
     
     <script type="text/html" id="object-template">
         <div class='object-browser'>
-            <h3 class='object-value' data-bind="text: value, click: getChildren"></h3>
+            <h3 class='object-value' data-bind="text: value, click: getChildren, css: { 'ui-state-disabled': !isObject() }"></h3>
             <div data-bind="foreach: children">
                 <div class='child-value' data-bind="template: { name: 'object-child-template', data: $data}"></div>
             </div>
