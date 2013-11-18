@@ -27,15 +27,27 @@
         </li>
     </script>
     
+    <script type="text/html" id="object-child-template">
+        <div class='object-browser'>
+            <h3 class='object-value' data-bind="click: value().getChildren.bind(value())">
+                <span data-bind='text: key'></span>
+                <span data-bind='text: value().value'></span>
+            </h3>
+            <div data-bind="foreach: value().children">
+                <div class='child-value' data-bind="template: { name: 'object-child-template', data: $data}"></div>
+            </div>
+        </div>
+    </script>
+    
     <script type="text/html" id="object-template">
         <div class='object-browser'>
             <h3 class='object-value' data-bind="text: value, click: getChildren"></h3>
             <div data-bind="foreach: children">
-                <a class='child-key' data-bind="text: key"></a>
-                <div data-bind="template: { name: 'object-template', data: value}"></div>
+                <div class='child-value' data-bind="template: { name: 'object-child-template', data: $data}"></div>
             </div>
         </div>
     </script>
+    
     
     <script type="text/html" id="output-template">
         <!-- ko if: type === 'result' -->
