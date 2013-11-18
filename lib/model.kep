@@ -117,7 +117,7 @@ ConsoleViewModel.prototype.push = function(value, ctx, error) {
 };
 
 ConsoleViewModel.prototype.selectFrame = \item -> {
-    debugger;
+    this.environment();
 };
 
 }

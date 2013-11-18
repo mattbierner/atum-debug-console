@@ -22,6 +22,11 @@ body {
 body,
 .ui-widget {
     font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+body,
+h2,
+h3 {
     font-weight: 300;
 }
 
@@ -75,7 +80,6 @@ body header {
 .pane-title {
     font-size: 1.2em;
     margin: 0 0.25em;
-    font-weight: 400;
     padding: 0 0.25em;
 }
 
@@ -207,11 +211,14 @@ body header {
 #console #output .output-value {
     width: 100%;
     border-top: 1px solid lightgray;
-    padding: 0 0.2em;
 }
 
 #console #output .output-error > div > div > .ui-accordion-header {
     color: red;
+}
+
+.object-browser.ui-accordion .ui-accordion-header {
+    margin-top: 0;
 }
 
 /* -----------------------------------------------------------------------------

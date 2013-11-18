@@ -36,6 +36,7 @@ AtumObject = function(d, x, ctx) {
                 });
             }
         }
+        
         $('.object-browser')
             .accordion('refresh');
     };
