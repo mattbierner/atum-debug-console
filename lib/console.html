@@ -29,9 +29,9 @@
     
     <script type="text/html" id="object-child-template">
         <div class='object-browser'>
-            <h3 class='object-value' data-bind="click: value().getChildren.bind(value())">
-                <span data-bind='text: key'></span>
-                <span data-bind='text: value().value'></span>
+            <h3 class='object-value' data-bind="click: value().getChildren.bind(value()), css: { 'object-leaf': !value().isObject(), 'ui-state-disabled': !value().isObject() }">
+                <span class='child-key-label' data-bind='text: key'></span>
+                <span class='child-value-label' data-bind='text: value().value'></span>
             </h3>
             <div data-bind="foreach: value().children">
                 <div class='child-value' data-bind="template: { name: 'object-child-template', data: $data}"></div>
@@ -56,7 +56,7 @@
             </li>
         <!-- /ko -->
         <!-- ko if: type === 'input' -->
-            <li class='input-value'>
+            <li class='output-value input-value'>
                 <span data-bind="text: input"></div>
             </li>
         <!-- /ko -->

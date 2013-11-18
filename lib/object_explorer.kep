@@ -15,8 +15,19 @@ in {
 
 static $;
 
+
 var noop = \->{};
 
+var updateAccordions = \() ->
+    $('.object-browser').each(\ ->
+        ($(this).hasClass('ui-accordion') ?
+            $(this) :
+            $(this).accordion({
+                'collapsible': true,
+                'animate': 100,
+                'heightStyle': "content",
+                'active': false
+            })));
 /* 
  ******************************************************************************/
 var AtumChild = function(key, value) {
@@ -33,15 +44,16 @@ AtumObject = function(d, x) {
     
     self.value = ko.observable(value);
     self.children = ko.observableArray();
+    self.isObject = ko.observable(value && value.type === 'object');
     
     self.getChildren = \data, event -> {
         var self = this;
         var value = self.value();
         
-        if (this.children().length)
+        if (!self.isObject())
             return;
         
-        if (value && value.type === 'object') {
+        if (!this.children().length) {
             run.extract(d, object.getOwnPropertyNames(x), null,
                 (map, \key ->
                     run.extract(d,
@@ -49,11 +61,9 @@ AtumObject = function(d, x) {
                         null,
                         \value -> self.children.push(new AtumChild(key, new AtumObject(d, value))))));
         }
+        
         if (event)
-            $('.object-browser')
-                .accordion({
-                    'heightStyle': "content"
-                });
+            updateAccordions();
     };
 };
 

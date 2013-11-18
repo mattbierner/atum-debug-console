@@ -223,10 +223,30 @@ body header {
  ---------------------------------------------------------------------------- */
 .object-browser.ui-accordion .ui-accordion-header {
     margin-top: 0;
+    background: none;
+}
+
+.ui-accordion-header.ui-state-disabled .ui-accordion-header-icon {
+    display: none;
+}
+
+.ui-accordion-header.ui-state-disabled {
+    opacity: 1;
 }
 
 .object-browser .child-value {
     display: inline;
+}
+
+.child-key-label {
+
+}
+.child-key-label:after {
+    content: ": "
+}
+
+.child-value-label {
+    font-weight: normal;
 }
 
 /* -----------------------------------------------------------------------------
