@@ -34,11 +34,11 @@ AtumObject = function(d, x) {
     self.value = ko.observable(value);
     self.children = ko.observableArray();
     
-    self.getChildren = \data -> {
-        var target = data.value(),
-            value = data.value().value();
+    self.getChildren = \data, event -> {
+        var self = this;
+        var value = self.value();
         
-        if (target.children().length)
+        if (this.children().length)
             return;
         
         if (value && value.type === 'object') {
@@ -47,18 +47,20 @@ AtumObject = function(d, x) {
                     run.extract(d,
                         object.get(x, key),
                         null,
-                        \value -> target.children.push(new AtumChild(key, new AtumObject(d, value))))));
+                        \value -> self.children.push(new AtumChild(key, new AtumObject(d, value))))));
         }
-        
-        $('.object-browser')
-            .accordion('refresh');
+        if (event)
+            $('.object-browser')
+                .accordion({
+                    'heightStyle': "content"
+                });
     };
 };
 
 
 create = \value, ctx -> {
     var obj = new AtumObject(debug.debug(just(value), ctx, noop, noop), value);
-    obj.getChildren({'key':'', 'value': ko.observable(obj) });
+    obj.getChildren();
     return obj;
 };
 

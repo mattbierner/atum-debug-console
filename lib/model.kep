@@ -20,6 +20,8 @@ with
     import 'atum_debug_console/object_explorer' object_explorer{AtumObject}
 in {
 
+static $;
+
 var map = \f, a -> Array.prototype.map.call(a, f);
 
 var noop = \x -> x;
@@ -43,7 +45,7 @@ in
     bindings.reduce(\p, c -> {
         p.push({
             'name': c,
-            'value': run.extract(d, context.getEnvironmentBinding(environment, c), null)
+            'value': run.extract(d, context.getEnvironmentBinding(environment, c), null)//, \x, ctx -> new object_explorer.create(x, ctx))
         });
         return p;
     }, []);
@@ -59,6 +61,7 @@ var printEnvironments = function(d) {
         environments.push(printFrame(d, environment));
         environment = run.extract(d, context.getEnvironmentOuter(environment), null);
     } while (environment);
+    
     return environments;
 };
 
@@ -126,7 +129,6 @@ ConsoleViewModel.prototype.stop = \() ->
 ConsoleViewModel.prototype.pushResult = \value, ctx, error ->
     this.output.push(
         Result.create(object_explorer.create(value, ctx), error));
-
 
 ConsoleViewModel.prototype.pushInput = \input ->
     this.output.push(

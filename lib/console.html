@@ -29,9 +29,9 @@
     
     <script type="text/html" id="object-template">
         <div class='object-browser'>
-            <h3 class='object-value' data-bind="text: value"></h3>
+            <h3 class='object-value' data-bind="text: value, click: getChildren"></h3>
             <div data-bind="foreach: children">
-                <a class='child-key' data-bind="text: key, click: $parent.getChildren"></a>
+                <a class='child-key' data-bind="text: key"></a>
                 <div data-bind="template: { name: 'object-template', data: value}"></div>
             </div>
         </div>
