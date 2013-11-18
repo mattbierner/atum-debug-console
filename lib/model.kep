@@ -107,7 +107,7 @@ ConsoleViewModel.prototype.stop = \() ->
     this.debug(null);
 
 ConsoleViewModel.prototype.push = function(value, ctx, error) {
-    var obj = new AtumObject(debug.debug(compute.just(value), ctx, noop, noop), value, ctx);
+    var obj = new AtumObject(debug.debug(compute.just(value), ctx, noop, noop), value);
     obj.getChildren({'key':'', 'value': ko.observable(obj) });
     this.output.push({
         'value': obj,
