@@ -210,6 +210,7 @@ body header {
 
 #console #output .output-value {
     width: 100%;
+    min-height: 1em;
     border-top: 1px solid lightgray;
 }
 
@@ -217,7 +218,9 @@ body header {
     color: red;
 }
 
-
+.output-value.input-value > .ui-icon {
+    float: left;
+}
 /* -----------------------------------------------------------------------------
     Object Browser
  ---------------------------------------------------------------------------- */
