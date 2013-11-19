@@ -107,7 +107,6 @@ model.location.subscribe(\x -> {
        cm.addLineClass(x.start.line - 1, 'background', 'active-line');
 });
 
-
 /* 
  ******************************************************************************/
 $(function(){
@@ -136,7 +135,8 @@ $(function(){
     
     $('button#eval-button')
         .button()
-        .click(\e -> {
+        .click(\-> let
+                
             var input = doc.getValue();
             model.debug(
                 debug.beginInput(
@@ -148,15 +148,13 @@ $(function(){
     
     $('button#debug-button')
         .button()
-        .click(\e -> {
-            var input = doc.getValue();
-            
-            model.debug(
-                debug.beginInput(
-                    input,
-                    out.write,
-                    errorOut.write));
-        });
+        .click(\->
+            let input = doc.getValue() in
+                model.debug(
+                    debug.beginInput(
+                        input,
+                        out.write,
+                        errorOut.write)));
     
     stopButton
         .button({'disabled': true})
