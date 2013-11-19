@@ -1,6 +1,8 @@
 package (
     AtumObject,
-    create)
+    updateAccordions,
+    create,
+    createForKey)
 with
     import 'knockout-2.2.1' ko,
     
@@ -18,7 +20,7 @@ static $;
 
 var noop = \->{};
 
-var updateAccordions = \() ->
+updateAccordions = \() ->
     $('.object-browser').each(\ ->
         ($(this).hasClass('ui-accordion') ?
             $(this) :
@@ -73,5 +75,8 @@ create = \value, ctx -> {
     obj.getChildren();
     return obj;
 };
+
+createForKey = \key, value, ctx ->
+    new AtumChild(key, create(value, ctx));
 
 }

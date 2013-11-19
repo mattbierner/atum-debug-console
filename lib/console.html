@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Atum</title>
+    <title>Jakal</title>
     
     <link type="text/css" rel="stylesheet" href="/resources/jquery-ui-1.10.3/css/ui-lightness/jquery-ui-1.10.3.custom.css" />
     <link type="text/css" rel="stylesheet" href="/resources/layout-default-latest.css" />
@@ -11,22 +11,6 @@
 </head>
 
 <body lang="en">
-    <script type="text/html" id="environments-template">
-        <li>
-            <ul class='binding-list' data-bind="foreach: bindings">
-                <li class='binding code'>
-                    <span class='binding-name' data-bind="text: name"></span>:<span class='binding-value' data-bind="text: value"></span>
-                </li>
-            </ul>
-        </li>
-    </script>
-    
-    <script type="text/html" id="stack-frame-template">
-        <li class='stack-frame'>
-            <a class='stack-frame-name' data-bind="text: name, click: $parent.selectFrame"></a>
-        </li>
-    </script>
-    
     <script type="text/html" id="object-child-template">
         <div class='object-browser'>
             <h3 class='object-value' data-bind="click: value().getChildren.bind(value()), css: { 'ui-state-disabled': !value().isObject() }">
@@ -47,8 +31,24 @@
             </div>
         </div>
     </script>
+
+    <script type="text/html" id="environments-template">
+        <li>
+            <ul class='binding-list' data-bind="foreach: bindings">
+                <li class='binding code'>
+                    <div data-bind="template: { name: 'object-child-template', data: value }"></div>
+                </li>
+            </ul>
+        </li>
+    </script>
     
+    <script type="text/html" id="stack-frame-template">
+        <li class='stack-frame'>
+            <a class='stack-frame-name' data-bind="text: name, click: $parent.selectFrame"></a>
+        </li>
+    </script>
     
+
     <script type="text/html" id="output-template">
         <!-- ko if: type === 'result' -->
             <li class='output-value' data-bind="css: { 'output-error': error }">
@@ -67,7 +67,11 @@
     
     
     <header id='page-header' class='cf'>
-        <h1 id='page-title'>Atum</h1>
+        <div id='left-title' class='cf'>
+            <a id='jakal-logo'>
+                <img src='/media/images/logo.svg' />
+            </a>
+        <div>
     </header>
     
     <div id='container' class="content">

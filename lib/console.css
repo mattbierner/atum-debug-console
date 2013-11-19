@@ -37,22 +37,26 @@ h3 {
 
 body header {
     box-sizing: border-box;
-    height: 26px;
-    border-bottom: 1px solid lightgray;
+    height: 32px;
+    border-bottom: 1px solid gray;
+    background: white; /*#FF5A00;*/
+    color: #0c0c0c;
 }
 
-#page-title {
-    margin: 0 0.35em;
-    padding: 0;
-    font-size: 1.6em;
+#jakal-logo {
+    height: 31px;
+    display: block;
+    float: left;
+    padding: 0 0.5em;
+    border-right: 1px solid gray;
 }
 
 #container {
     box-sizing: border-box;
     height: 100%;
    
-    margin-top: -26px;
-    padding-top: 26px;
+    margin-top: -32px;
+    padding-top: 32px;
 }
 
 /* -----------------------------------------------------------------------------

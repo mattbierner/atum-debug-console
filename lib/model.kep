@@ -39,20 +39,24 @@ Input.prototype.type = 'input';
 
 /* Environment
  ******************************************************************************/
+var Environment = function(bindings) {
+    this.bindings = ko.observableArray(bindings);
+};
+
+var Binding = function(name, value) {
+    this.name = name;
+    this.value = value;
+};
+
 var printBindings = \d, environment -> let
     bindings = run.extract(d, context.getEnvironmentBindings(environment), [])
 in
     bindings.reduce(\p, c -> {
-        p.push({
-            'name': c,
-            'value': run.extract(d, context.getEnvironmentBinding(environment, c), null)//, \x, ctx -> new object_explorer.create(x, ctx))
-        });
+        p.push(new Binding(c, run.extract(d, context.getEnvironmentBinding(environment, c), null, \x, ctx -> object_explorer.createForKey(c, x, ctx))));
         return p;
     }, []);
 
-var printFrame = \d, lex -> ({
-    'bindings': printBindings(d, lex)
-});
+var printFrame = \d, lex -> new Environment(printBindings(d, lex));
 
 var printEnvironments = function(d) {
     var environments = [];
