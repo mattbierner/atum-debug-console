@@ -46,7 +46,10 @@ AtumObject = function(d, x) {
     
     self.value = ko.observable(value);
     self.children = ko.observableArray();
+    
+    self.type = ko.observable(value ? value.type : null);
     self.isObject = ko.observable(value && value.type === 'object');
+    self.displayValue = ko.observable(!value || self.isObject() ? value : value.value);
     
     self.getChildren = \data, event -> {
         var self = this;

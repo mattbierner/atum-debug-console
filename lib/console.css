@@ -225,6 +225,7 @@ body header {
 .output-value.input-value > .ui-icon {
     float: left;
 }
+
 /* -----------------------------------------------------------------------------
     Object Browser
  ---------------------------------------------------------------------------- */
@@ -246,15 +247,33 @@ body header {
 }
 
 .child-key-label {
-
+    color: black;
 }
 .child-key-label:after {
     content: ": "
 }
 
-.child-value-label {
+.value-label {
     font-weight: normal;
 }
+
+.object-browser.type-number .value-label {
+    color: green;
+}
+
+.object-browser.type-string .value-label {
+    color: red;
+}
+
+.object-browser.type-string .value-label:before {
+    content: "\"";
+}
+
+.object-browser.type-string .value-label:after {
+    content: "\"";
+}
+
+
 
 /* -----------------------------------------------------------------------------
     Workspace -> Console -> Interactive
