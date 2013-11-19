@@ -21,21 +21,9 @@ var model;
 
 /* 
  ******************************************************************************/
-var updateAccordions = \() ->
-    $('.object-browser').each(\ ->
-        ($(this).hasClass('ui-accordion') ?
-            $(this) :
-            $(this).accordion({
-                'collapsible': true,
-                'animate': 100,
-                'heightStyle': "content",
-                'active': false
-            })));
-
 var out = {
     'write': \x, ctx -> {
         model.pushResult(x, ctx, false);
-        updateAccordions();
         $('#output > ul')
             .scrollTop($('#output > ul')[0].scrollHeight);
     }
@@ -44,7 +32,6 @@ var out = {
 var errorOut = {
     'write': \x, ctx -> {
         model.pushResult(x, ctx, true);
-        updateAccordions();
         $('#output > ul')
             .scrollTop($('#output > ul')[0].scrollHeight);
     }
@@ -120,9 +107,6 @@ model.location.subscribe(\x -> {
        cm.addLineClass(x.start.line - 1, 'background', 'active-line');
 });
 
-model.environments.subscribe(\x -> {
-    updateAccordions();
-});
 
 /* 
  ******************************************************************************/

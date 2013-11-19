@@ -20,8 +20,8 @@ static $;
 
 var noop = \->{};
 
-updateAccordions = \() ->
-    $('.object-browser').each(\ ->
+updateAccordions = \target ->
+    target.each(\ ->
         ($(this).hasClass('ui-accordion') ?
             $(this) :
             $(this).accordion({
@@ -66,9 +66,10 @@ AtumObject = function(d, x) {
                         null,
                         \value -> self.children.push(new AtumChild(key, new AtumObject(d, value))))));
         }
-        
-        if (event)
-            updateAccordions();
+    };
+    
+    self.afterRender = \elements, data -> {
+        updateAccordions($(elements).find('.object-browser').add('.object-browser'));
     };
 };
 
