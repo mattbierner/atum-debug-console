@@ -106,22 +106,40 @@
             </div>
         </section>
         
-        <section class='debug pane ui-layout-east'>
-            <div class='pane-header'>
-                <h2 class='pane-title'>State</h2>
-            </div>
+        <section id='right-panel' class='debug pane ui-layout-east'>
+            <nav class='pane-header cf'>
+                <ul>
+                    <li>State</li>
+                    <li></li>
+                </ul>
+            </nav>
             <div>
                 <ul class='environments' data-bind="template: { name: 'environments-template', foreach: environments }"></ul>
             </div>
         </section>
         
-        <section class='callstack pane ui-layout-west'>
-            <div class='pane-header'>
-                <h2 class='pane-title'>Callstack</h2>
-            </div>
-            <div>
+        <section id='left-panel' class='callstack pane ui-layout-west'>
+            <nav class='pane-header cf'>
+                <ul>
+                    <li>
+                        <a href='#tab-callstack' title='Call Stack'>
+                            <span class='ui-icon ui-icon-carat-2-n-s'></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href='#tab-breakpoints' title='Breakpoints'>
+                            <span class='ui-icon ui-icon-bullet'></span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div id='tab-callstack'>
                 <ul class='callstack' data-bind="template: { name: 'stack-frame-template', foreach: stack }"></ul>
             </div>
+            
+            <div id='tab-breakpoints'>Breakpoints</div>
+
         </section>
         
     </div>

@@ -116,9 +116,15 @@ $(function(){
         stepOutButton = $('button#step-out-button'),
         stepIntoButton = $('button#step-into-button'),
         stepOverButton = $('button#step-over-button');
-
+    
     $('#container')
         .layout();
+    
+    $('#left-panel')
+        .tabs();
+    
+    $('#right-panel')
+        .tabs();
     
     model.debug.subscribe(\x -> {
         var disable = !x || x.debug.complete;
@@ -135,8 +141,7 @@ $(function(){
     
     $('button#eval-button')
         .button()
-        .click(\-> let
-                
+        .click(\-> {
             var input = doc.getValue();
             model.debug(
                 debug.beginInput(

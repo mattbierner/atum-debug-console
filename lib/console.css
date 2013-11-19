@@ -36,11 +36,13 @@ h3 {
 }
 
 body header {
+    position: relative;
     box-sizing: border-box;
     height: 32px;
     border-bottom: 1px solid gray;
-    background: white; /*#FF5A00;*/
-    color: #0c0c0c;
+    background: #333;
+    color: #FF5A00;
+    z-index: 500;
 }
 
 #jakal-logo {
@@ -49,6 +51,10 @@ body header {
     float: left;
     padding: 0 0.5em;
     border-right: 1px solid gray;
+}
+
+#jakal-logo:hover {
+    background: #FF5A00;
 }
 
 #container {
@@ -77,9 +83,54 @@ body header {
     width: auto;
 }
 
-.pane-header {
-    border-bottom: 1px solid red;
+.ui-tabs-anchor:hover {
+    background: #FF5A00;
 }
+
+.ui-state-active .ui-tabs-anchor:hover {
+    background: inherit;
+}
+
+.pane-header {
+    border-bottom: 1px solid gray;
+}
+
+.pane-header .ui-tabs-nav {
+    padding: 0;
+}
+
+.pane-header .ui-widget-header {
+    background: lightgray;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.pane-header .ui-tabs-nav li {
+    display: block;
+    float: left;
+    margin: 0;
+    
+    border: 0;
+    border-radius: 0;
+    border-right: 1px solid gray;
+}
+
+.pane-header .ui-tabs-nav .ui-tabs-anchor {
+    display: block;
+    margin: 0;
+    padding: 0 0.25em;
+    height: 100%;
+    height: 22px;
+    min-width: 22px;
+    text-align: center;
+    outline: none;
+}
+
+.pane-header .ui-tabs-nav .ui-tabs-anchor .ui-icon {
+    display: inline-block;
+}
+
 
 .pane-title {
     font-size: 1.2em;
