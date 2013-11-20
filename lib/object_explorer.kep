@@ -30,6 +30,7 @@ updateAccordions = \target ->
                 'heightStyle': "content",
                 'active': false
             })));
+
 /* 
  ******************************************************************************/
 var AtumChild = function(key, value) {
@@ -59,12 +60,18 @@ AtumObject = function(d, x) {
             return;
         
         if (!this.children().length) {
+            run.extract(d, object.getPrototype(x), null, \value -> {
+                if (value)
+                    self.children.push(new AtumChild("__proto__", new AtumObject(d, value)));
+            });
+            
             run.extract(d, object.getOwnPropertyNames(x), null,
                 (map, \key ->
                     run.extract(d,
                         object.get(x, key),
                         null,
-                        \value -> self.children.push(new AtumChild(key, new AtumObject(d, value))))));
+                        \value ->
+                            self.children.push(new AtumChild(key, new AtumObject(d, value))))));
         }
     };
     

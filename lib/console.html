@@ -33,7 +33,7 @@
     </script>
 
     <script type="text/html" id="environments-template">
-        <li>
+        <li class='environment'>
             <ul class='binding-list' data-bind="foreach: bindings">
                 <li class='binding code'>
                     <div data-bind="template: { name: 'object-child-template', data: value, afterRender: value.value().afterRender }"></div>
@@ -109,11 +109,15 @@
         <section id='right-panel' class='debug pane ui-layout-east'>
             <nav class='pane-header cf'>
                 <ul>
-                    <li>State</li>
+                    <li>
+                        <a href='#tab-state' title='State Browser'>
+                            <span class='ui-icon ui-icon-contact'></span>
+                        </a>
+                    </li>
                     <li></li>
                 </ul>
             </nav>
-            <div>
+            <div id='tab-state'>
                 <ul class='environments' data-bind="template: { name: 'environments-template', foreach: environments }"></ul>
             </div>
         </section>
