@@ -417,6 +417,7 @@ body header {
     font-size: 0.90em;
     font-weight: normal;
     line-height: 100%;
+    border-bottom: 1px solid lightgray;
 }
 
 .binding .binding-name {
