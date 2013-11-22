@@ -31,10 +31,12 @@ var noop = \x -> x;
 Result = record.declare(null, [
     'value',
     'error']);
+
 Result.prototype.type = 'result';
 
 Input = record.declare(null, [
     'input']);
+
 Input.prototype.type = 'input';
 
 /* Environment
@@ -96,15 +98,19 @@ ConsoleViewModel = function() {
     
     self.output = ko.observableArray();
     
+    self.breakpoints = ko.observableArray();
+    
     self.location = ko.computed <|\->
         (self.debug() ?
             run.extract(self.debug(), context.location, null) :
             []);
 
-    self.environments = ko.computed <|\->
-        (self.debug() ?
-            printEnvironments(self.debug()) :
-            []);
+    self.environments = ko.observable();
+    
+    self.debug.subscribe <|\debug ->
+        (debug ?
+            self.environments(printEnvironments(debug)) :
+            self.environments([]));
     
     self.stack = ko.computed <|\->
         (self.debug() ?
@@ -122,7 +128,7 @@ ConsoleViewModel.prototype.stepOver = \() ->
     this.debug(step.stepOver(this.debug()));
 
 ConsoleViewModel.prototype.stepInto = \() ->
-    this.debug(step.step(this.debug()));
+    this.debug(step.stepNextLine(this.debug()));
 
 ConsoleViewModel.prototype.stepOut = \() ->
     this.debug(step.stepOut(this.debug()));
