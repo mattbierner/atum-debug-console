@@ -101,9 +101,9 @@ ConsoleViewModel = function() {
     self.breakpoints = ko.observableArray();
     
     self.location = ko.computed <|\->
-        (self.debug() ?
+        (self.debug() && !self.debug().debug.complete ?
             run.extract(self.debug(), context.location, null) :
-            []);
+            null);
 
     self.environments = ko.observable();
     
