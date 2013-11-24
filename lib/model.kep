@@ -15,6 +15,7 @@ with
     import 'sheut/run' run,
     import 'sheut/step' step,
     import 'sheut/operations/context' context,
+    import 'sheut/operations/stack' stack,
     import 'sheut/operations/reference' reference,
     
     import 'atum_debug_console/object_explorer' object_explorer{AtumObject}
@@ -80,12 +81,12 @@ var StackFrame = function(name) {
 
 var createStackFrame = \d, frame ->
     new StackFrame(
-        run.extract(d, context.getStackFrameName(frame), '', \x -> x.value));
+        run.extract(d, stack.getStackFrameName(frame), '', \x -> x.value));
 
 var printStack = \d -> 
     run.extract(
         d,
-        context.stack,
+        stack.stack,
         [],
         (map, (createStackFrame, d)));
 
