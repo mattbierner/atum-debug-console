@@ -40,6 +40,12 @@ Input = record.declare(null, [
 
 Input.prototype.type = 'input';
 
+/* Location
+ ******************************************************************************/
+var Location = function(type, value) {
+    
+};
+
 /* Environment
  ******************************************************************************/
 var Environment = function(bindings) {
@@ -61,7 +67,7 @@ in
 
 var printFrame = \d, lex -> new Environment(printBindings(d, lex));
 
-var printEnvironments = function(d, env) {
+var printEnvironments = \d, env -> {
     var environments = [];
     var environment = env;
     do {
@@ -75,6 +81,11 @@ var printEnvironments = function(d, env) {
 
 /* Stack
  ******************************************************************************/
+var Stack = function(current, frames) {
+    this.current = ko.observable(current);
+    this.frames = ko.observableArray(frames);
+};
+
 var StackFrame = function(name, environment) {
     this.name = name;
     this.environment = environment;
@@ -82,15 +93,15 @@ var StackFrame = function(name, environment) {
 
 var createStackFrame = \d, frame ->
     new StackFrame(
-        run.extract(d, stack.getStackFrameName(frame), '', \x -> x.value),
+        run.extract(d, stack.getStackFrameName(frame)),
         frame.environment);
 
 var printStack = \d -> 
-    run.extract(
+    new Stack(0, run.extract(
         d,
         stack.stack,
         [],
-        (map, (createStackFrame, d)));
+        (map, (createStackFrame, d))));
 
 /* ConsoleViewModel
  ******************************************************************************/
@@ -99,6 +110,9 @@ ConsoleViewModel = function() {
     
     self.debug = ko.observable();
     
+    self.stack = ko.observable();
+    self.environments = ko.observable();
+
     self.output = ko.observableArray();
     
     self.breakpoints = ko.observableArray();
@@ -107,17 +121,18 @@ ConsoleViewModel = function() {
         (self.debug() && !self.debug().debug.complete ?
             run.extract(self.debug(), context.location, null) :
             null);
-
-    self.environments = ko.observable();
     
-    self.debug.subscribe <|\debug ->
-        (debug ?
-            self.environments(printEnvironments(debug, run.extract(debug, context.environment, null))) :
-            self.environments([]));
-    
-    self.stack = ko.computed <|\->
-        (self.debug() ?
-            printStack(self.debug()) :
+    self.debug.subscribe <|\debug -> {
+        self.stack(debug ?
+            printStack(debug)  :
+            new Stack(0, []));
+    };
+        
+    self.stack.subscribe <|\stack-> let
+        current = stack && stack.frames()[stack.current()]
+    in
+        self.environments(current ?
+            printEnvironments(self.debug(), current.environment) :
             []);
 };
 
@@ -148,8 +163,8 @@ ConsoleViewModel.prototype.pushInput = \input ->
         Input.create(input));
 
 
-ConsoleViewModel.prototype.selectFrame = \frame -> {
-    this.environments(printEnvironments(this.debug(), frame.environment));
+ConsoleViewModel.prototype.selectFrame = \index, frame -> {
+    this.stack(new Stack(index, this.stack().frames()));
 };
 
 }
