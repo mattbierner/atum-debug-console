@@ -61,9 +61,9 @@ in
 
 var printFrame = \d, lex -> new Environment(printBindings(d, lex));
 
-var printEnvironments = function(d) {
+var printEnvironments = function(d, env) {
     var environments = [];
-    var environment = run.extract(d, context.environment, null);
+    var environment = env;
     do {
         environments.push(printFrame(d, environment));
         environment = run.extract(d, context.getEnvironmentOuter(environment), null);
@@ -75,13 +75,15 @@ var printEnvironments = function(d) {
 
 /* Stack
  ******************************************************************************/
-var StackFrame = function(name) {
+var StackFrame = function(name, environment) {
     this.name = name;
+    this.environment = environment;
 };
 
 var createStackFrame = \d, frame ->
     new StackFrame(
-        run.extract(d, stack.getStackFrameName(frame), '', \x -> x.value));
+        run.extract(d, stack.getStackFrameName(frame), '', \x -> x.value),
+        frame.environment);
 
 var printStack = \d -> 
     run.extract(
@@ -110,7 +112,7 @@ ConsoleViewModel = function() {
     
     self.debug.subscribe <|\debug ->
         (debug ?
-            self.environments(printEnvironments(debug)) :
+            self.environments(printEnvironments(debug, run.extract(debug, context.environment, null))) :
             self.environments([]));
     
     self.stack = ko.computed <|\->
@@ -146,8 +148,8 @@ ConsoleViewModel.prototype.pushInput = \input ->
         Input.create(input));
 
 
-ConsoleViewModel.prototype.selectFrame = \item -> {
-    this.environment();
+ConsoleViewModel.prototype.selectFrame = \frame -> {
+    this.environments(printEnvironments(this.debug(), frame.environment));
 };
 
 }

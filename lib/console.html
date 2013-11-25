@@ -44,7 +44,7 @@
     
     <script type="text/html" id="stack-frame-template">
         <li class='stack-frame'>
-            <a class='stack-frame-name' data-bind="text: name, click: $parent.selectFrame"></a>
+            <a class='stack-frame-name' data-bind="text: name, click: $parent.selectFrame.bind($parent)"></a>
         </li>
     </script>
     
