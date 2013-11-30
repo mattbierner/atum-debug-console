@@ -1,0 +1,48 @@
+package (
+    Stack,
+    printStack)
+with
+    import 'knockout-2.2.1' ko,
+    
+    import 'amulet/record' record,
+    
+    import 'sheut/run' run,
+    import 'sheut/operations/stack' stack
+in {
+
+var map = \f, a -> Array.prototype.map.call(a, f);
+
+/* Stack
+ ******************************************************************************/
+Stack = record.declare(null, [
+    'current',
+    'frames'],
+    function(current, frames) {
+        this.current = ko.observable(current);
+        this.frames = ko.observableArray(frames);
+    });
+
+var StackFrame = record.declare(null, [
+    'name',
+    'environment'],
+    function(name, environment) {
+        this.name = name;
+        this.environment = environment;
+    });
+
+/* Create
+ ******************************************************************************/
+printStack = let
+    createStackFrame = \d, frame ->
+        StackFrame.create(
+            run.extract(d, stack.getStackFrameName(frame)),
+            frame.environment)
+in
+    \d -> 
+        Stack.create(0, run.extract(
+            d,
+            stack.stack,
+            [],
+            (map, (createStackFrame, d))));
+
+}

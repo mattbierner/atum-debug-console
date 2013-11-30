@@ -6,6 +6,8 @@ package (
 with
     import 'knockout-2.2.1' ko,
     
+    import 'amulet/record' record,
+    
     import 'atum/compute' {just},
     
     import 'sheut/debug' debug,
@@ -17,33 +19,27 @@ in {
 
 static $;
 
-
 var noop = \->{};
-
-updateAccordions = \target ->
-    target.each(\ ->
-        ($(this).hasClass('ui-accordion') ?
-            $(this) :
-            $(this).accordion({
-                'collapsible': true,
-                'animate': 100,
-                'heightStyle': "content",
-                'active': false
-            })));
 
 /* 
  ******************************************************************************/
-var AtumChild = function(key, value) {
-    var self = this;
-
-    self.key = ko.observable(key);
-    self.value = ko.observable(value);
-};
+var AtumChild = record.declare(null, [
+    'key',
+    'value'],
+    function(key, value) {
+        var self = this;
+    
+        self.key = ko.observable(key);
+        self.value = ko.observable(value);
+    });
 
 AtumObject = function(d, x) {
     var self = this;
     
     var value = run.extract(d, reference.getValue(x), null);
+    
+    self.data = x;
+    self.ctx = d;
     
     self.value = ko.observable(value);
     self.children = ko.observableArray();
@@ -51,35 +47,32 @@ AtumObject = function(d, x) {
     self.type = ko.observable(value ? value.type : null);
     self.isObject = ko.observable(value && value.type === 'object');
     self.displayValue = run.extract(d, object.displayName(x), 'ERROR');
-    
-    self.getChildren = \data, event -> {
-        var self = this;
-        var value = self.value();
-        
-        if (!self.isObject())
-            return;
-        
-        if (!this.children().length) {
-            run.extract(d, object.getPrototype(x), null, \value -> {
-                if (value)
-                    self.children.push(new AtumChild("__proto__", new AtumObject(d, value)));
-            });
-            
-            run.extract(d, object.getOwnPropertyNames(x), null,
-                (map, \key ->
-                    run.extract(d,
-                        object.get(x, key),
-                        null,
-                        \value ->
-                            self.children.push(new AtumChild(key, new AtumObject(d, value))))));
-        }
-    };
-    
-    self.afterRender = \elements, data -> {
-        updateAccordions($(elements).find('.object-browser').add('.object-browser'));
-    };
 };
 
+AtumObject.prototype.getChildren = \data, event -> {
+    var self = this;
+    
+    if (!self.isObject() || self.children().length)
+        return;
+    
+    run.extract(self.ctx,
+        object.getPrototype(self.data),
+        null,
+        \value -> {
+            if (value)
+                self.children.push(new AtumChild("__proto__", new AtumObject(self.ctx, value)));
+        });
+    
+    run.extract(self.ctx,
+        object.getOwnPropertyNames(self.data),
+        null,
+        (map, \key ->
+            run.extract(self.ctx,
+                object.get(self.data, key),
+                null,
+                \value ->
+                    self.children.push(new AtumChild(key, new AtumObject(self.ctx, value))))));
+};
 
 create = \value, ctx -> {
     var obj = new AtumObject(debug.debug(just(value), ctx, noop, noop), value);

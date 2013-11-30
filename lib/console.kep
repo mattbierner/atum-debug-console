@@ -8,7 +8,9 @@ with
     import 'sheut/operations/evaluation' evaluate,
     
     import 'atum_debug_console/model' atum_debug_model,
-    import 'atum_debug_console/object_explorer' object_explorer
+    import 'atum_debug_console/object_explorer' object_explorer,
+    import 'atum_debug_console/accordion-binding' accortion_binding
+    
 in {
 
 static CodeMirror;
@@ -110,6 +112,8 @@ model.location.subscribe(\x -> {
 /* 
  ******************************************************************************/
 $(function(){
+    accortion_binding.init();
+    
     var stopButton = $('button#stop-button'),
         runButton = $('button#run-button'),
         stepButton = $('button#step-button'),

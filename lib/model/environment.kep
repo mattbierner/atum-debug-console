@@ -1,0 +1,56 @@
+package (
+    printEnvironments)
+with
+    import 'knockout-2.2.1' ko,
+    
+    import 'amulet/record' record,
+    
+    import 'sheut/run' run,
+    import 'sheut/operations/context' context,
+    
+    import 'atum_debug_console/object_explorer' object_explorer{AtumObject}
+in {
+
+var map = \f, a -> Array.prototype.map.call(a, f);
+
+    
+/* Environment
+ ******************************************************************************/
+var Environment = record.declare(null, [
+    'bindings'],
+    function(bindings) {
+        this.bindings = ko.observableArray(bindings);
+    });
+
+var Binding = record.declare(null, [
+    'name',
+    'value']);
+
+/* Environment
+ ******************************************************************************/
+var printBindings = \d, environment ->
+    run.extract(d,
+        context.getEnvironmentBindings(environment),
+        [],
+        (map, \binding ->
+            Binding.create(binding,
+                run.extract(d,
+                    context.getEnvironmentBinding(environment, binding),
+                    null,
+                    (object_explorer.createForKey, binding)))));
+
+var printFrame = \d, lex ->
+    Environment.create(
+        printBindings(d, lex));
+
+printEnvironments = \d, env -> {
+    var environments = [];
+    var environment = env;
+    do {
+        environments.push(printFrame(d, environment));
+        environment = run.extract(d, context.getEnvironmentOuter(environment), null);
+    } while (environment);
+    
+    return environments;
+};
+}

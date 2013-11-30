@@ -12,19 +12,19 @@
 
 <body lang="en">
     <script type="text/html" id="object-child-template">
-        <div class='object-browser' data-bind="css: 'type-' + value().type()" >
+        <div class='object-browser' data-bind="css: 'type-' + value().type(), accordion: true" >
             <h3 class='object-value' data-bind="click: value().getChildren.bind(value()), css: { 'ui-state-disabled': !value().isObject() }">
                 <span class='child-key-label' data-bind='text: key'></span>
                 <span class='value-label' data-bind='text: value().displayValue'></span>
             </h3>
-            <div data-bind="foreach: { data: value().children, afterRender: value().afterRender }">
+            <div data-bind="foreach: { data: value().children }">
                 <div class='child-value' data-bind="template: { name: 'object-child-template', data: $data }"></div>
             </div>
         </div>
     </script>
     
     <script type="text/html" id="object-template">
-        <div class='object-browser' data-bind="css: 'type-' + type()" >
+        <div class='object-browser' data-bind="css: 'type-' + type(), accordion: true" >
             <h3 class='object-value value-label' data-bind="text: displayValue, click: getChildren, css: { 'ui-state-disabled': !isObject() }"></h3>
             <div data-bind="foreach: { data: children }">
                 <div class='child-value' data-bind="template: { name: 'object-child-template', data: $data}"></div>
@@ -36,7 +36,7 @@
         <li class='environment'>
             <ul class='binding-list' data-bind="foreach: bindings">
                 <li class='binding code'>
-                    <div data-bind="template: { name: 'object-child-template', data: value, afterRender: value.value().afterRender }"></div>
+                    <div data-bind="template: { name: 'object-child-template', data: value }"></div>
                 </li>
             </ul>
         </li>
@@ -47,7 +47,7 @@
     </script>
     
     <script type="text/html" id="stack-frame-template">
-        <li class='stack-frame' data-bind="css: { 'active-frame': ($parent.current() === $index()) }">
+        <li class='stack-frame code' data-bind="css: { 'active-frame': ($parent.current() === $index()) }">
             <a class='stack-frame-name' data-bind="text: name, click: $root.selectFrame.bind($root, $index())"></a>
         </li>
     </script>
@@ -56,7 +56,7 @@
     <script type="text/html" id="output-template">
         <!-- ko if: type === 'result' -->
             <li class='output-value' data-bind="css: { 'output-error': error }">
-                <div data-bind="template: { name: 'object-template', data: value, afterRender: value.afterRender }"></div>
+                <div data-bind="template: { name: 'object-template', data: value }"></div>
             </li>
         <!-- /ko -->
         <!-- ko if: type === 'input' -->
@@ -165,7 +165,7 @@
     <script type="application/javascript">
         requirejs.config({
             paths: {
-                'atum_debug_console': '/lib',
+                'atum_debug_console': '/dist',
                 'text': '/resources/text',
 
                 'atum': '/dependencies/atum/lib',

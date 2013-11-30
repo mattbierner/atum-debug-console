@@ -2,7 +2,9 @@
  * THIS FILE IS AUTO GENERATED from 'lib/console.kep'
  * DO NOT EDIT
 */
-define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/step", "sheut/run", "sheut/operations/evaluation", "atum_debug_console/model", "atum_debug_console/object_explorer"], (function(require, exports, ko, debug, step, run, evaluate, atum_debug_model, object_explorer) {
+define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/step", "sheut/run", "sheut/operations/evaluation",
+    "atum_debug_console/model", "atum_debug_console/object_explorer", "atum_debug_console/accordion-binding"
+], (function(require, exports, ko, debug, step, run, evaluate, atum_debug_model, object_explorer, accortion_binding) {
     "use strict";;
     var ko = ko,
         debug = debug,
@@ -10,7 +12,8 @@ define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/step", "sh
         run = run,
         evaluate = evaluate,
         atum_debug_model = atum_debug_model,
-        object_explorer = object_explorer;;;;
+        object_explorer = object_explorer,
+        accortion_binding = accortion_binding;;;;
     var id = (function(x) {
         return x;
     });
@@ -18,13 +21,15 @@ define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/step", "sh
     var out = ({
         "write": (function(x, ctx) {
             model.pushResult(x, ctx, false);
-            $("#output > ul").scrollTop($("#output > ul")[0].scrollHeight);
+            $("#output > ul")
+                .scrollTop($("#output > ul")[0].scrollHeight);
         })
     });
     var errorOut = ({
         "write": (function(x, ctx) {
             model.pushResult(x, ctx, true);
-            $("#output > ul").scrollTop($("#output > ul")[0].scrollHeight);
+            $("#output > ul")
+                .scrollTop($("#output > ul")[0].scrollHeight);
         })
     });
     var cm = CodeMirror(document.getElementById("input"), ({
@@ -39,7 +44,9 @@ define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/step", "sh
     var interactiveDoc = interactive.doc;
     interactive.setSize(null, 20);
     interactive.on("beforeChange", (function(instance, change) {
-        change.update(change.from, change.to, [change.text.join("").replace(/\n/g, "")]);
+        change.update(change.from, change.to, [change.text.join("")
+            .replace(/\n/g, "")
+        ]);
         return true;
     }));
     interactive.on("keyHandled", (function(instance, name, event) {
@@ -60,31 +67,32 @@ define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/step", "sh
                 } else {
                     step.finish(debug.beginInput(input, writeOut, writeError));
                 }
-
             }
         }
-
     }));
     (model = new(atum_debug_model.ConsoleViewModel)());
     ko.applyBindings(model);
     model.location.subscribe((function(current) {
-        if ((current && current.start)) cm.removeLineClass((current.start.line - 1), "background", "active-line");
-
+        if ((current && current.start)) cm.removeLineClass((current.start.line - 1), "background",
+            "active-line");
     }), null, "beforeChange");
     model.location.subscribe((function(x) {
         if ((x && x.start)) cm.addLineClass((x.start.line - 1), "background", "active-line");
-
     }));
     $((function() {
+        accortion_binding.init();
         var stopButton = $("button#stop-button"),
             runButton = $("button#run-button"),
             stepButton = $("button#step-button"),
             stepOutButton = $("button#step-out-button"),
             stepIntoButton = $("button#step-into-button"),
             stepOverButton = $("button#step-over-button");
-        $("#container").layout();
-        $("#left-panel").tabs();
-        $("#right-panel").tabs();
+        $("#container")
+            .layout();
+        $("#left-panel")
+            .tabs();
+        $("#right-panel")
+            .tabs();
         model.debug.subscribe((function(x) {
             var disable = (!x || x.debug.complete);
             stopButton.button("option", "disabled", disable);
@@ -94,46 +102,59 @@ define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/step", "sh
             stepIntoButton.button("option", "disabled", disable);
             stepOutButton.button("option", "disabled", disable);
         }));
-        $("#output > ul").on("accordionactivate", ".object-browser", (function(event, ui) {
-            return $("#output > ul").scrollTop($(this).offset().top);
-        }));
-        $("button#eval-button").button().click((function() {
-            var input = doc.getValue();
-            model.debug(debug.beginInput(input, out.write, errorOut.write));
-            model.finish();
-        }));
-        $("button#debug-button").button().click((function() {
-            return (function() {
-                {
-                    var input = doc.getValue();
-                    return model.debug(debug.beginInput(input, out.write, errorOut.write));
-                }
-            })();
-        }));
+        $("#output > ul")
+            .on("accordionactivate", ".object-browser", (function(event, ui) {
+                return $("#output > ul")
+                    .scrollTop($(this)
+                        .offset()
+                        .top);
+            }));
+        $("button#eval-button")
+            .button()
+            .click((function() {
+                var input = doc.getValue();
+                model.debug(debug.beginInput(input, out.write, errorOut.write));
+                model.finish();
+            }));
+        $("button#debug-button")
+            .button()
+            .click((function() {
+                return (function() {
+                    {
+                        var input = doc.getValue();
+                        return model.debug(debug.beginInput(input, out.write, errorOut.write));
+                    }
+                })();
+            }));
         stopButton.button(({
             "disabled": true
-        })).click((function(e) {
-            model.stop();
-        }));
+        }))
+            .click((function(e) {
+                model.stop();
+            }));
         runButton.button(({
             "disabled": true
-        })).click((function(e) {
-            model.run();
-        }));
+        }))
+            .click((function(e) {
+                model.run();
+            }));
         stepButton.button(({
             "disabled": true
-        })).click((function(e) {
-            model.stepOver();
-        }));
+        }))
+            .click((function(e) {
+                model.stepOver();
+            }));
         stepIntoButton.button(({
             "disabled": true
-        })).click((function(e) {
-            model.stepInto();
-        }));
+        }))
+            .click((function(e) {
+                model.stepInto();
+            }));
         stepOutButton.button(({
             "disabled": true
-        })).click((function(e) {
-            model.stepOut();
-        }));
+        }))
+            .click((function(e) {
+                model.stepOut();
+            }));
     }));
 }))

@@ -354,9 +354,49 @@ body header {
 }
 
 /* -----------------------------------------------------------------------------
+    Call stack
+ ---------------------------------------------------------------------------- */
+#tab-callstack {
+    padding: 0;
+}
+ 
+.callstack {
+    list-style: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.stack-frame {
+    width: 100%;
+    margin: 0;
+    padding: 0.1em 0;
+    padding-left: 1em;
+    border-top: 1px solid lightgray;
+    font-size: 1em;
+}
+
+.stack-frame:last-child {
+    border-bottom: 1px solid lightgray;
+}
+
+.active-frame {
+    background: rgba(0, 183, 235, 0.25);
+}
+
+.stack-frame-name {
+    display: block;
+    width: 100%;
+}
+
+.stack-frame-name:hover {
+    text-decoration: underline;
+}
+ 
+
+/* -----------------------------------------------------------------------------
     
  ---------------------------------------------------------------------------- */
-
 
 .ui-corner-all {
     border-radius: 0;
@@ -391,7 +431,7 @@ body header {
 #tab-state {
     padding: 0;
 }
- 
+
 .environments {
     margin: 0;
     padding: 0;
@@ -464,14 +504,7 @@ body header {
     padding: 0;
 }
 
-/* -----------------------------------------------------------------------------
-    Stack
- ---------------------------------------------------------------------------- */
 
-.active-frame {
-    background: red;
-}
- 
  
  
  

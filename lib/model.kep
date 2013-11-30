@@ -8,20 +8,16 @@ with
     
     import 'amulet/record' record,
     
-    import 'atum/compute' compute,
-    import 'atum/operations/object' object,
-    
     import 'sheut/debug' debug,
     import 'sheut/run' run,
     import 'sheut/step' step,
     import 'sheut/operations/context' context,
-    import 'sheut/operations/stack' stack,
-    import 'sheut/operations/reference' reference,
     
+    import 'atum_debug_console/model/environment' {printEnvironments},
+    import 'atum_debug_console/model/stack' {Stack, printStack},
+
     import 'atum_debug_console/object_explorer' object_explorer{AtumObject}
 in {
-
-static $;
 
 var map = \f, a -> Array.prototype.map.call(a, f);
 
@@ -45,63 +41,6 @@ Input.prototype.type = 'input';
 var Location = function(type, value) {
     
 };
-
-/* Environment
- ******************************************************************************/
-var Environment = function(bindings) {
-    this.bindings = ko.observableArray(bindings);
-};
-
-var Binding = function(name, value) {
-    this.name = name;
-    this.value = value;
-};
-
-var printBindings = \d, environment -> let
-    bindings = run.extract(d, context.getEnvironmentBindings(environment), [])
-in
-    bindings.reduce(\p, c -> {
-        p.push(new Binding(c, run.extract(d, context.getEnvironmentBinding(environment, c), null, \x, ctx -> object_explorer.createForKey(c, x, ctx))));
-        return p;
-    }, []);
-
-var printFrame = \d, lex -> new Environment(printBindings(d, lex));
-
-var printEnvironments = \d, env -> {
-    var environments = [];
-    var environment = env;
-    do {
-        environments.push(printFrame(d, environment));
-        environment = run.extract(d, context.getEnvironmentOuter(environment), null);
-    } while (environment);
-    
-    return environments;
-};
-
-
-/* Stack
- ******************************************************************************/
-var Stack = function(current, frames) {
-    this.current = ko.observable(current);
-    this.frames = ko.observableArray(frames);
-};
-
-var StackFrame = function(name, environment) {
-    this.name = name;
-    this.environment = environment;
-};
-
-var createStackFrame = \d, frame ->
-    new StackFrame(
-        run.extract(d, stack.getStackFrameName(frame)),
-        frame.environment);
-
-var printStack = \d -> 
-    new Stack(0, run.extract(
-        d,
-        stack.stack,
-        [],
-        (map, (createStackFrame, d))));
 
 /* ConsoleViewModel
  ******************************************************************************/
@@ -127,7 +66,7 @@ ConsoleViewModel = function() {
             printStack(debug)  :
             new Stack(0, []));
     };
-        
+    
     self.stack.subscribe <|\stack-> let
         current = stack && stack.frames()[stack.current()]
     in
@@ -161,7 +100,6 @@ ConsoleViewModel.prototype.pushResult = \value, ctx, error ->
 ConsoleViewModel.prototype.pushInput = \input ->
     this.output.push(
         Input.create(input));
-
 
 ConsoleViewModel.prototype.selectFrame = \index, frame -> {
     this.stack(new Stack(index, this.stack().frames()));
