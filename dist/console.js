@@ -2,21 +2,16 @@
  * THIS FILE IS AUTO GENERATED from 'lib/console.kep'
  * DO NOT EDIT
 */
-define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/step", "sheut/run", "sheut/operations/evaluation",
-    "atum_debug_console/model", "atum_debug_console/object_explorer", "atum_debug_console/accordion-binding"
-], (function(require, exports, ko, debug, step, run, evaluate, atum_debug_model, object_explorer, accortion_binding) {
+define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/console_view_model",
+    "atum_debug_console/object_explorer", "atum_debug_console/accordion-binding",
+    "atum_debug_console/editor/interactive"
+], (function(require, exports, ko, atum_debug_model, object_explorer, accortion_binding, interactive) {
     "use strict";;
     var ko = ko,
-        debug = debug,
-        step = step,
-        run = run,
-        evaluate = evaluate,
         atum_debug_model = atum_debug_model,
         object_explorer = object_explorer,
-        accortion_binding = accortion_binding;;;;
-    var id = (function(x) {
-        return x;
-    });
+        accortion_binding = accortion_binding,
+        interactive = interactive;;;;
     var model;
     var out = ({
         "write": (function(x, ctx) {
@@ -37,39 +32,7 @@ define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/step", "sh
         "lineNumbers": true
     }));
     var doc = cm.doc;
-    var interactive = CodeMirror(document.getElementById("output-interactive-textarea"), ({
-        "mode": "javascript",
-        "lineNumbers": false
-    }));
-    var interactiveDoc = interactive.doc;
-    interactive.setSize(null, 20);
-    interactive.on("beforeChange", (function(instance, change) {
-        change.update(change.from, change.to, [change.text.join("")
-            .replace(/\n/g, "")
-        ]);
-        return true;
-    }));
-    interactive.on("keyHandled", (function(instance, name, event) {
-        if ((name === "Enter")) {
-            var input = interactiveDoc.getValue(); {
-                var writeOut = (function(x, ctx) {
-                    interactive.setValue("");
-                    model.pushInput(input);
-                    out.write(x, ctx);
-                }),
-                    writeError = (function(x, ctx) {
-                        interactive.setValue("");
-                        model.pushInput(input);
-                        errorOut.write(x, ctx);
-                    });
-                if (model.debug()) {
-                    run.evaluate(model.debug(), evaluate.evaluateInput(input), writeOut, writeError);
-                } else {
-                    step.finish(debug.beginInput(input, writeOut, writeError));
-                }
-            }
-        }
-    }));
+    accortion_binding.init();
     (model = new(atum_debug_model.ConsoleViewModel)());
     ko.applyBindings(model);
     model.location.subscribe((function(current) {
@@ -80,7 +43,7 @@ define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/step", "sh
         if ((x && x.start)) cm.addLineClass((x.start.line - 1), "background", "active-line");
     }));
     $((function() {
-        accortion_binding.init();
+        interactive.create(document.getElementById("output-interactive-textarea"), model);
         var stopButton = $("button#stop-button"),
             runButton = $("button#run-button"),
             stepButton = $("button#step-button"),
@@ -112,19 +75,13 @@ define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/step", "sh
         $("button#eval-button")
             .button()
             .click((function() {
-                var input = doc.getValue();
-                model.debug(debug.beginInput(input, out.write, errorOut.write));
+                model.beginDebugging(doc.getValue(), out.write, errorOut.write);
                 model.finish();
             }));
         $("button#debug-button")
             .button()
             .click((function() {
-                return (function() {
-                    {
-                        var input = doc.getValue();
-                        return model.debug(debug.beginInput(input, out.write, errorOut.write));
-                    }
-                })();
+                return model.beginDebugging(doc.getValue(), out.write, errorOut.write);
             }));
         stopButton.button(({
             "disabled": true

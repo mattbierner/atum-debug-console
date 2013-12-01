@@ -1,5 +1,5 @@
 /*
- * THIS FILE IS AUTO GENERATED from 'lib/model.kep'
+ * THIS FILE IS AUTO GENERATED from 'lib/model/console_view_model.kep'
  * DO NOT EDIT
 */
 define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", "sheut/run", "sheut/step",
@@ -21,12 +21,6 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
         printStack = __o0["printStack"],
         object_explorer = object_explorer,
         AtumObject = object_explorer["AtumObject"];
-    var map = (function(f, a) {
-        return Array.prototype.map.call(a, f);
-    });
-    var noop = (function(x) {
-        return x;
-    });
     (Result = record.declare(null, ["value", "error"]));
     (Result.prototype.type = "result");
     (Input = record.declare(null, ["input"]));
@@ -56,6 +50,9 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
                 }
             })();
         }));
+    }));
+    (ConsoleViewModel.prototype.beginDebugging = (function(input, ok, err) {
+        return this.debug(debug.beginInitialInput(input, ok, err));
     }));
     (ConsoleViewModel.prototype.finish = (function() {
         return this.debug(step.finish(this.debug()));

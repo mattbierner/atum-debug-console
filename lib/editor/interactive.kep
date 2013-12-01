@@ -1,0 +1,60 @@
+package (
+    create)
+with
+    import 'knockout-2.2.1' ko,
+    
+    import 'sheut/debug' debug,
+    import 'sheut/run' run,
+    import 'sheut/step' step,
+    import 'sheut/operations/evaluation' evaluate
+in {
+
+static CodeMirror;
+
+create = \element, model -> {
+    var interactive = CodeMirror(element, {
+        'mode': 'javascript',
+        'lineNumbers': false
+    });
+    
+    interactive.setSize(null, 20);
+    
+    interactive.on('beforeChange', function(instance, change) {
+        change.update(change.from, change.to, [change.text.join("").replace(`\n`g, "")]);
+        return true;
+    });
+    
+    interactive.on('keyHandled', function(instance, name, event) {
+        if (name === 'Enter') {
+            var input = instance.doc.getValue();
+            with
+                writeOut = \x, ctx -> {
+                    interactive.setValue('');
+                    model.pushInput(input);
+                    model.pushResult(x, ctx, false);
+                },
+                writeError = \x, ctx -> {
+                    interactive.setValue('');
+                    model.pushInput(input);
+                    model.pushResult(x, ctx, true);
+                }
+            in {
+                if (model.debug()) {
+                    run.evaluate(
+                        model.debug(),
+                        evaluate.evaluateInput(input),
+                        writeOut,
+                        writeError);
+                } else {
+                    step.finish(
+                        debug.beginInitialInput(
+                            input,
+                            writeOut,
+                            writeError));
+                }
+            }
+        }
+    });
+};
+
+}

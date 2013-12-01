@@ -50,7 +50,7 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "atum/compute",
         })));
     }));
     (create = (function(value, ctx) {
-        var obj = new(AtumObject)(debug.debug(just(value), ctx, noop, noop), value);
+        var obj = new(AtumObject)(debug.debugInitial(just(value), ctx, noop, noop), value);
         obj.getChildren();
         return obj;
     }));

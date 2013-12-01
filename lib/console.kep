@@ -2,22 +2,15 @@ package ()
 with
     import 'knockout-2.2.1' ko,
     
-    import 'sheut/debug' debug,
-    import 'sheut/step' step,
-    import 'sheut/run' run,
-    import 'sheut/operations/evaluation' evaluate,
-    
-    import 'atum_debug_console/model' atum_debug_model,
+    import 'atum_debug_console/model/console_view_model' atum_debug_model,
     import 'atum_debug_console/object_explorer' object_explorer,
-    import 'atum_debug_console/accordion-binding' accortion_binding
-    
+    import 'atum_debug_console/accordion-binding' accortion_binding,
+    import 'atum_debug_console/editor/interactive' interactive
 in {
 
 static CodeMirror;
 static document;
 static $;
-
-var id = \x -> x;
 
 var model;
 
@@ -48,53 +41,10 @@ var cm = CodeMirror(document.getElementById('input'), {
 
 var doc = cm.doc;
 
-var interactive = CodeMirror(document.getElementById('output-interactive-textarea'), {
-    'mode': 'javascript',
-    'lineNumbers': false
-});
-var interactiveDoc = interactive.doc;
-
-interactive.setSize(null, 20);
-
-interactive.on('beforeChange', function(instance, change) {
-    change.update(change.from, change.to, [change.text.join("").replace(`\n`g, "")]);
-    return true;
-});
-
-interactive.on('keyHandled', function(instance, name, event) {
-    if (name === 'Enter') {
-        var input = interactiveDoc.getValue();
-        with
-            writeOut = \x, ctx -> {
-                interactive.setValue('');
-                model.pushInput(input);
-                out.write(x, ctx);
-            },
-            writeError = \x, ctx -> {
-                interactive.setValue('');
-                model.pushInput(input);
-                errorOut.write(x, ctx);
-            }
-        in {
-            if (model.debug()) {
-                run.evaluate(
-                    model.debug(),
-                    evaluate.evaluateInput(input),
-                    writeOut,
-                    writeError);
-            } else {
-                step.finish(
-                    debug.beginInput(
-                        input,
-                        writeOut,
-                        writeError));
-            }
-        }
-    }
-});
-
 /* 
  ******************************************************************************/
+accortion_binding.init();
+
 model = new atum_debug_model.ConsoleViewModel();
 
 ko.applyBindings(model);
@@ -112,7 +62,8 @@ model.location.subscribe(\x -> {
 /* 
  ******************************************************************************/
 $(function(){
-    accortion_binding.init();
+    
+    interactive.create(document.getElementById('output-interactive-textarea'), model);
     
     var stopButton = $('button#stop-button'),
         runButton = $('button#run-button'),
@@ -146,24 +97,20 @@ $(function(){
     $('button#eval-button')
         .button()
         .click(\-> {
-            var input = doc.getValue();
-            model.debug(
-                debug.beginInput(
-                    input,
-                    out.write,
-                    errorOut.write));
+            model.beginDebugging(
+                doc.getValue(),
+                out.write,
+                errorOut.write);
             model.finish();
         });
-    
+     
     $('button#debug-button')
         .button()
         .click(\->
-            let input = doc.getValue() in
-                model.debug(
-                    debug.beginInput(
-                        input,
-                        out.write,
-                        errorOut.write)));
+            model.beginDebugging(
+                doc.getValue(),
+                out.write,
+                errorOut.write));
     
     stopButton
         .button({'disabled': true})

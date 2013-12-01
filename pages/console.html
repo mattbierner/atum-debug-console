@@ -28,7 +28,7 @@
         <div class='object-browser' data-bind="css: 'type-' + type(), accordion: true" >
             <h3 class='object-value value-label' data-bind="text: displayValue, click: getChildren, css: { 'ui-state-disabled': !isObject() }"></h3>
             <div data-bind="foreach: { data: children }">
-                <div class='child-value' data-bind="template: { name: 'object-child-template', data: $data}"></div>
+                <div class='child-value' data-bind="template: { name: 'object-child-template'}"></div>
             </div>
         </div>
     </script>
@@ -53,6 +53,15 @@
         </li>
     </script>
     
+    
+    <script type="text/html" id="breakpoints-template">
+        <ul class='breakpoints' data-bind="template: { name: 'breakpoint-frame-template', foreach: breakpoints }"></ul>
+    </script>
+    
+    <script type="text/html" id="breakpoint-template">
+        <li class='breakpoint'>
+        </li>
+    </script>
 
     <script type="text/html" id="output-template">
         <!-- ko if: type === 'result' -->
@@ -66,7 +75,6 @@
                 <span data-bind="text: input"></div>
             </li>
         <!-- /ko -->
-        
     </script>
     
     

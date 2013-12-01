@@ -19,10 +19,6 @@ with
     import 'atum_debug_console/object_explorer' object_explorer{AtumObject}
 in {
 
-var map = \f, a -> Array.prototype.map.call(a, f);
-
-var noop = \x -> x;
-
 /* Console
  ******************************************************************************/
 Result = record.declare(null, [
@@ -74,6 +70,13 @@ ConsoleViewModel = function() {
             printEnvironments(self.debug(), current.environment) :
             []);
 };
+
+ConsoleViewModel.prototype.beginDebugging = \input, ok, err ->
+    this.debug(
+        debug.beginInitialInput(
+            input,
+            ok,
+            err));
 
 ConsoleViewModel.prototype.finish = \() ->
     this.debug(step.finish(this.debug()));
