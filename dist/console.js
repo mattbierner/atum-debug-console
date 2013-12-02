@@ -44,7 +44,9 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
     }));
     $((function() {
         interactive.create(document.getElementById("output-interactive-textarea"), model);
-        var stopButton = $("button#stop-button"),
+        var evalButton = $("button#eval-button"),
+            debugButton = $("button#debug-button"),
+            stopButton = $("button#stop-button"),
             runButton = $("button#run-button"),
             stepButton = $("button#step-button"),
             stepOutButton = $("button#step-out-button"),
@@ -58,6 +60,8 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
             .tabs();
         model.debug.subscribe((function(x) {
             var disable = (!x || x.debug.complete);
+            evalButton.button("option", "disabled", !disable);
+            debugButton.button("option", "disabled", !disable);
             stopButton.button("option", "disabled", disable);
             runButton.button("option", "disabled", disable);
             stepButton.button("option", "disabled", disable);
@@ -72,14 +76,12 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
                         .offset()
                         .top);
             }));
-        $("button#eval-button")
-            .button()
+        evalButton.button()
             .click((function() {
                 model.beginDebugging(doc.getValue(), out.write, errorOut.write);
                 model.finish();
             }));
-        $("button#debug-button")
-            .button()
+        debugButton.button()
             .click((function() {
                 return model.beginDebugging(doc.getValue(), out.write, errorOut.write);
             }));

@@ -65,7 +65,9 @@ $(function(){
     
     interactive.create(document.getElementById('output-interactive-textarea'), model);
     
-    var stopButton = $('button#stop-button'),
+    var evalButton = $('button#eval-button'),
+        debugButton = $('button#debug-button'),
+        stopButton = $('button#stop-button'),
         runButton = $('button#run-button'),
         stepButton = $('button#step-button'),
         stepOutButton = $('button#step-out-button'),
@@ -83,6 +85,10 @@ $(function(){
     
     model.debug.subscribe(\x -> {
         var disable = !x || x.debug.complete;
+        
+        evalButton.button('option', "disabled", !disable);
+        debugButton.button('option', "disabled", !disable);
+        
         stopButton.button('option', "disabled", disable);
         runButton.button('option', "disabled", disable);
         stepButton.button('option', "disabled", disable);
@@ -91,10 +97,11 @@ $(function(){
         stepOutButton.button('option', "disabled", disable);
     });
     
-    $("#output > ul").on("accordionactivate", '.object-browser', \event, ui ->
-        $('#output > ul').scrollTop($(this).offset().top));
+    $("#output > ul")
+        .on("accordionactivate", '.object-browser', \event, ui ->
+            $('#output > ul').scrollTop($(this).offset().top));
     
-    $('button#eval-button')
+    evalButton
         .button()
         .click(\-> {
             model.beginDebugging(
@@ -104,7 +111,7 @@ $(function(){
             model.finish();
         });
      
-    $('button#debug-button')
+    debugButton
         .button()
         .click(\->
             model.beginDebugging(
