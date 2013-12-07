@@ -8,7 +8,6 @@ with
     
     import 'amulet/record' record,
     
-    import 'sheut/breakpoint' breakpoint,
     import 'sheut/debug' debug,
     import 'sheut/run' run,
     import 'sheut/state' {Debugger, addBreakpoint, removeBreakpoint},
@@ -17,6 +16,7 @@ with
     
     import 'atum_debug_console/model/environment' {printEnvironments},
     import 'atum_debug_console/model/stack' {Stack, printStack},
+    import 'atum_debug_console/model/breakpoint' {Breakpoint},
 
     import 'atum_debug_console/object_explorer' object_explorer{AtumObject}
 in {
@@ -40,31 +40,16 @@ var Location = function(type, value) {
     
 };
 
-/* Breakpoint
- ******************************************************************************/
-var Breakpoint = function(id, doc, handle) {
-    this.id = id;
-    this.doc = doc;
-    this.handle = handle;
-};
-
-
-Breakpoint.prototype.getImpl = \ ->
-    breakpoint.Breakpoint.create(
-        breakpoint.unconditional(
-            this.doc.getLineNumber(this.handle) + 1));
-
 /* ConsoleViewModel
  ******************************************************************************/
 ConsoleViewModel = function() {
     var self = this;
     
-    self.debug = ko.observable();
+    self.debug = ko.observable(Debugger.initial);
     
     self.debugState = ko.observable();
     
-    self.debugging = ko.computed <|\->
-        (self.debugState() && !self.debugState().complete);
+    self.debugging = ko.observable();
     
     self.stack = ko.observable();
     self.location = ko.observable();
@@ -79,14 +64,15 @@ ConsoleViewModel = function() {
             self.debugState(d.debug);
     };
     
-    self.debugState.subscribe <|\ -> {
-        if (self.debug()) {
+    self.debugState.subscribe <|\debugState -> {
+        if (debugState) {
             self.stack(printStack(self.debug()));
             self.location(run.extract(self.debug(), context.location, null));
         } else {
             self.stack(new Stack(0, []));
             self.location(null);
         }
+        self.debugging(debugState && !debugState.complete);
     };
     
     self.stack.subscribe <|\stack-> let
@@ -97,15 +83,10 @@ ConsoleViewModel = function() {
             []);
 };
 
-ConsoleViewModel.prototype.beginDebugging = \input, ok, err -> let
-    state = this.breakpoints().reduce(
-        \d, b ->
-            addBreakpoint(d, b.id, b.getImpl()),
-        Debugger.initial)
-in 
+ConsoleViewModel.prototype.beginDebugging = \input, ok, err ->
     this.debug(
         debug.beginInput(
-            state,
+            this.debug(),
             input,
             ok,
             err));
@@ -126,7 +107,7 @@ ConsoleViewModel.prototype.stepOut = \() ->
     this.debug(step.stepOut(this.debug()));
 
 ConsoleViewModel.prototype.stop = \() ->
-    this.debug(null);
+    this.debugging(false);
 
 ConsoleViewModel.prototype.pushResult = \value, ctx, error ->
     this.output.push(
@@ -136,9 +117,9 @@ ConsoleViewModel.prototype.pushInput = \input ->
     this.output.push(
         Input.create(input));
 
-ConsoleViewModel.prototype.selectFrame = \index, frame -> {
-    this.stack(new Stack(index, this.stack().frames()));
-};
+ConsoleViewModel.prototype.selectFrame = \index, frame ->
+    this.stack(
+        new Stack(index, this.stack().frames()));
 
 ConsoleViewModel.prototype.addBreakpoint = \doc, handle -> {
     var b = new Breakpoint(
@@ -146,8 +127,7 @@ ConsoleViewModel.prototype.addBreakpoint = \doc, handle -> {
         doc,
         handle);
     
-    if (this.debugging())
-        this.debug(addBreakpoint(this.debug(), b.id, b.getImpl()));
+    this.debug(addBreakpoint(this.debug(), b.id, b.getImpl()));
     
     this.breakpoints.push(b);
 };
@@ -155,10 +135,9 @@ ConsoleViewModel.prototype.addBreakpoint = \doc, handle -> {
 ConsoleViewModel.prototype.removeBreakpoint = \doc, handle -> {
     var pred = \x -> x.doc === doc && x.handle === handle;
     var b = this.breakpoints().filter(pred)[0];
-    
-    if (this.debugging())
-        this.debug(removeBreakpoint(this.debug(), b.id));
 
+    this.debug(removeBreakpoint(this.debug(), b.id));
+    
     this.breakpoints.remove(pred);
 };
 
