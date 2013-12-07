@@ -55,11 +55,12 @@
     
     
     <script type="text/html" id="breakpoints-template">
-        <ul class='breakpoints' data-bind="template: { name: 'breakpoint-frame-template', foreach: breakpoints }"></ul>
+        <ul class='breakpoints' data-bind="template: { name: 'breakpoint-frame-template', foreach: $data }"></ul>
     </script>
     
     <script type="text/html" id="breakpoint-template">
         <li class='breakpoint'>
+            <div data-bind='text: id'></div>
         </li>
     </script>
 
@@ -155,7 +156,10 @@
                 <div data-bind="template: { name: 'stack-template', data: stack }"></div>
             </div>
             
-            <div id='tab-breakpoints'>Breakpoints</div>
+            <div id='tab-breakpoints'>
+                
+                <div data-bind="template: { name: 'breakpoints-template', data: breakpoints }"></div>
+            </div>
             
         </section>
         

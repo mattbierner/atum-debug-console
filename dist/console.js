@@ -29,9 +29,27 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
     });
     var cm = CodeMirror(document.getElementById("input"), ({
         "mode": "javascript",
-        "lineNumbers": true
+        "lineNumbers": true,
+        "gutters": ["breakpoints", "CodeMirror-linenumbers"]
     }));
     var doc = cm.doc;
+    cm.on("gutterClick", (function() {
+        {
+            var makeMarker = (function() {
+                var marker = document.createElement("div");
+                (marker.className = "breakpoint");
+                return marker;
+            });
+            return (function(cm, n) {
+                var info = cm.lineInfo(n);
+                cm.setGutterMarker(n, "breakpoints", (info.gutterMarkers ? null : makeMarker()));
+            });
+        }
+    })());
+    cm.on("beforeChange", (function(cm, change) {
+        if ((model.debug() && !model.debug()
+            .debug.complete)) return change.cancel();
+    }));
     accortion_binding.init();
     (model = new(atum_debug_model.ConsoleViewModel)());
     ko.applyBindings(model);

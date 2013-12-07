@@ -10,6 +10,7 @@ with
     
     import 'sheut/debug' debug,
     import 'sheut/run' run,
+    import 'sheut/state' {Debugger, addBreakpoint, removeBreakpoint},
     import 'sheut/step' step,
     import 'sheut/operations/context' context,
     
@@ -38,6 +39,17 @@ var Location = function(type, value) {
     
 };
 
+/* Breakpoint
+ ******************************************************************************/
+var Breakpoint = function(id) {
+    this.id = id;
+};
+
+var Breakpoint = function(id, location) {
+    this.id = id;
+    this.location = location;
+};
+
 /* ConsoleViewModel
  ******************************************************************************/
 ConsoleViewModel = function() {
@@ -59,7 +71,7 @@ ConsoleViewModel = function() {
     
     self.debug.subscribe <|\debug -> {
         self.stack(debug ?
-            printStack(debug)  :
+            printStack(debug) :
             new Stack(0, []));
     };
     
@@ -71,9 +83,15 @@ ConsoleViewModel = function() {
             []);
 };
 
-ConsoleViewModel.prototype.beginDebugging = \input, ok, err ->
+ConsoleViewModel.prototype.beginDebugging = \input, ok, err -> let
+    state = this.breakpoints().reduce(
+        \d, b, i ->
+            addBreakpoint(d, i, b),
+        Debugger.initial)
+in 
     this.debug(
-        debug.beginInitialInput(
+        debug.beginInput(
+            state,
             input,
             ok,
             err));

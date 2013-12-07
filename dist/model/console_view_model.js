@@ -26,6 +26,9 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
     (Input = record.declare(null, ["input"]));
     (Input.prototype.type = "input");
     var Location = (function(type, value) {});
+    var Breakpoint = (function(id) {
+        (this.id = id);
+    });
     (ConsoleViewModel = (function() {
         var self = this;
         (self.debug = ko.observable());

@@ -185,6 +185,20 @@ body header {
     padding-bottom: 0;
 }
 
+.breakpoints {
+    width: 100%;
+    position: absolute;
+}
+
+.breakpoint {
+    color: blue;
+    width: 100%;
+}
+
+.breakpoint:after {
+    content: "●";
+}
+
 /* -----------------------------------------------------------------------------
     Workspace -> Console
  ---------------------------------------------------------------------------- */

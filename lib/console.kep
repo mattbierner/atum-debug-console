@@ -36,10 +36,29 @@ var errorOut = {
  ******************************************************************************/
 var cm = CodeMirror(document.getElementById('input'), {
     'mode': 'javascript',
-    'lineNumbers': true
+    'lineNumbers': true,
+    'gutters': ['breakpoints', 'CodeMirror-linenumbers']
 });
 
 var doc = cm.doc;
+
+cm.on("gutterClick", let
+    makeMarker = \ -> {
+        var marker = document.createElement("div");
+        marker.className = 'breakpoint';
+        return marker;
+    }
+in
+    \cm, n -> {
+        var info = cm.lineInfo(n);
+        cm.setGutterMarker(n, 'breakpoints', info.gutterMarkers ? null : makeMarker());
+    });
+
+cm.on("beforeChange",  \cm, change -> {
+    if (model.debug() && !model.debug().debug.complete)
+        return change.cancel();
+});
+
 
 /* 
  ******************************************************************************/
@@ -62,7 +81,6 @@ model.location.subscribe(\x -> {
 /* 
  ******************************************************************************/
 $(function(){
-    
     interactive.create(document.getElementById('output-interactive-textarea'), model);
     
     var evalButton = $('button#eval-button'),
