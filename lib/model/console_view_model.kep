@@ -8,6 +8,7 @@ with
     
     import 'amulet/record' record,
     
+    import 'sheut/breakpoint' breakpoint,
     import 'sheut/debug' debug,
     import 'sheut/run' run,
     import 'sheut/state' {Debugger, addBreakpoint, removeBreakpoint},
@@ -41,14 +42,17 @@ var Location = function(type, value) {
 
 /* Breakpoint
  ******************************************************************************/
-var Breakpoint = function(id) {
+var Breakpoint = function(id, doc, handle) {
     this.id = id;
+    this.doc = doc;
+    this.handle = handle;
 };
 
-var Breakpoint = function(id, location) {
-    this.id = id;
-    this.location = location;
-};
+
+Breakpoint.prototype.getImpl = \ ->
+    breakpoint.Breakpoint.create(
+        breakpoint.unconditional(
+            this.doc.getLineNumber(this.handle) + 1));
 
 /* ConsoleViewModel
  ******************************************************************************/
@@ -85,8 +89,8 @@ ConsoleViewModel = function() {
 
 ConsoleViewModel.prototype.beginDebugging = \input, ok, err -> let
     state = this.breakpoints().reduce(
-        \d, b, i ->
-            addBreakpoint(d, i, b),
+        \d, b ->
+            addBreakpoint(d, b.id, b.getImpl()),
         Debugger.initial)
 in 
     this.debug(
@@ -124,6 +128,20 @@ ConsoleViewModel.prototype.pushInput = \input ->
 
 ConsoleViewModel.prototype.selectFrame = \index, frame -> {
     this.stack(new Stack(index, this.stack().frames()));
+};
+
+ConsoleViewModel.prototype.addBreakpoint = \doc, handle ->
+    this.breakpoints.push(
+        new Breakpoint(
+            this.breakpoints().length,
+            doc,
+            handle));
+    
+ConsoleViewModel.prototype.removeBreakpoint = \doc, handle -> {
+    var pred = \x -> x.doc === doc && x.handle === handle;
+    var b = this.breakpoints().filter(pred)[0];
+    this.breakpoints.remove(pred);
+    
 };
 
 }

@@ -190,12 +190,12 @@ body header {
     position: absolute;
 }
 
-.breakpoint {
+.editor-breakpoint {
     color: blue;
     width: 100%;
 }
 
-.breakpoint:after {
+.editor-breakpoint:after {
     content: "●";
 }
 

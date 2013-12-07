@@ -2,23 +2,28 @@
  * THIS FILE IS AUTO GENERATED from 'lib/model/console_view_model.kep'
  * DO NOT EDIT
 */
-define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", "sheut/run", "sheut/step",
-    "sheut/operations/context", "atum_debug_console/model/environment", "atum_debug_console/model/stack",
-    "atum_debug_console/object_explorer"
-], (function(require, exports, ko, record, debug, run, step, context, __o, __o0, object_explorer) {
+define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/breakpoint", "sheut/debug", "sheut/run",
+    "sheut/state", "sheut/step", "sheut/operations/context", "atum_debug_console/model/environment",
+    "atum_debug_console/model/stack", "atum_debug_console/object_explorer"
+], (function(require, exports, ko, record, breakpoint, debug, run, __o, step, context, __o0, __o1, object_explorer) {
     "use strict";
     var Result, Input, ConsoleViewModel;
     var ko = ko,
         record = record,
+        breakpoint = breakpoint,
         debug = debug,
         run = run,
+        __o = __o,
+        Debugger = __o["Debugger"],
+        addBreakpoint = __o["addBreakpoint"],
+        removeBreakpoint = __o["removeBreakpoint"],
         step = step,
         context = context,
-        __o = __o,
-        printEnvironments = __o["printEnvironments"],
         __o0 = __o0,
-        Stack = __o0["Stack"],
-        printStack = __o0["printStack"],
+        printEnvironments = __o0["printEnvironments"],
+        __o1 = __o1,
+        Stack = __o1["Stack"],
+        printStack = __o1["printStack"],
         object_explorer = object_explorer,
         AtumObject = object_explorer["AtumObject"];
     (Result = record.declare(null, ["value", "error"]));
@@ -26,9 +31,15 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
     (Input = record.declare(null, ["input"]));
     (Input.prototype.type = "input");
     var Location = (function(type, value) {});
-    var Breakpoint = (function(id) {
+    var Breakpoint = (function(id, doc, handle) {
         (this.id = id);
+        (this.doc = doc);
+        (this.handle = handle);
     });
+    (Breakpoint.prototype.getImpl = (function() {
+        return breakpoint.Breakpoint.create(breakpoint.unconditional((this.doc.getLineNumber(this.handle) +
+            1)));
+    }));
     (ConsoleViewModel = (function() {
         var self = this;
         (self.debug = ko.observable());
@@ -51,11 +62,21 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
                     return self.environments((current ? printEnvironments(self.debug(),
                         current.environment) : []));
                 }
-            })();
+            })
+                .call(this);
         }));
     }));
     (ConsoleViewModel.prototype.beginDebugging = (function(input, ok, err) {
-        return this.debug(debug.beginInitialInput(input, ok, err));
+        return (function() {
+            {
+                var state = this.breakpoints()
+                    .reduce((function(d, b) {
+                        return addBreakpoint(d, b.id, b.getImpl());
+                    }), Debugger.initial);
+                return this.debug(debug.beginInput(state, input, ok, err));
+            }
+        })
+            .call(this);
     }));
     (ConsoleViewModel.prototype.finish = (function() {
         return this.debug(step.finish(this.debug()));
@@ -84,6 +105,18 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
     (ConsoleViewModel.prototype.selectFrame = (function(index, frame) {
         this.stack(new(Stack)(index, this.stack()
             .frames()));
+    }));
+    (ConsoleViewModel.prototype.addBreakpoint = (function(doc, handle) {
+        return this.breakpoints.push(new(Breakpoint)(this.breakpoints()
+            .length, doc, handle));
+    }));
+    (ConsoleViewModel.prototype.removeBreakpoint = (function(doc, handle) {
+        var pred = (function(x) {
+            return ((x.doc === doc) && (x.handle === handle));
+        });
+        var b = this.breakpoints()
+            .filter(pred)[0];
+        this.breakpoints.remove(pred);
     }));
     (exports.Result = Result);
     (exports.Input = Input);

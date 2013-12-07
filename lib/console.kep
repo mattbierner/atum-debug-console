@@ -40,25 +40,32 @@ var cm = CodeMirror(document.getElementById('input'), {
     'gutters': ['breakpoints', 'CodeMirror-linenumbers']
 });
 
-var doc = cm.doc;
-
+/**
+ * Gutter breakpoints
+ */
 cm.on("gutterClick", let
     makeMarker = \ -> {
         var marker = document.createElement("div");
-        marker.className = 'breakpoint';
+        marker.className = 'editor-breakpoint';
         return marker;
     }
 in
-    \cm, n -> {
-        var info = cm.lineInfo(n);
-        cm.setGutterMarker(n, 'breakpoints', info.gutterMarkers ? null : makeMarker());
-    });
+    \cm, n ->
+        let info = cm.lineInfo(n) in
+            (info.gutterMarkers ?
+                let lh = cm.setGutterMarker(n, 'breakpoints', null) in
+                    model.removeBreakpoint(cm.doc, lh) :
+                
+                let lh = cm.setGutterMarker(n, 'breakpoints', makeMarker()) in
+                    model.addBreakpoint(cm.doc, lh)));
 
-cm.on("beforeChange",  \cm, change -> {
+/**
+ * Prevent editing while debugging.
+ */
+cm.on("beforeChange", \cm, change -> {
     if (model.debug() && !model.debug().debug.complete)
         return change.cancel();
 });
-
 
 /* 
  ******************************************************************************/
@@ -123,7 +130,7 @@ $(function(){
         .button()
         .click(\-> {
             model.beginDebugging(
-                doc.getValue(),
+                cm.doc.getValue(),
                 out.write,
                 errorOut.write);
             model.finish();
@@ -133,7 +140,7 @@ $(function(){
         .button()
         .click(\->
             model.beginDebugging(
-                doc.getValue(),
+                cm.doc.getValue(),
                 out.write,
                 errorOut.write));
     

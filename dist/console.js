@@ -32,17 +32,31 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
         "lineNumbers": true,
         "gutters": ["breakpoints", "CodeMirror-linenumbers"]
     }));
-    var doc = cm.doc;
     cm.on("gutterClick", (function() {
         {
             var makeMarker = (function() {
                 var marker = document.createElement("div");
-                (marker.className = "breakpoint");
+                (marker.className = "editor-breakpoint");
                 return marker;
             });
             return (function(cm, n) {
-                var info = cm.lineInfo(n);
-                cm.setGutterMarker(n, "breakpoints", (info.gutterMarkers ? null : makeMarker()));
+                return (function() {
+                    {
+                        var info = cm.lineInfo(n);
+                        return (info.gutterMarkers ? (function() {
+                            {
+                                var lh = cm.setGutterMarker(n, "breakpoints", null);
+                                return model.removeBreakpoint(cm.doc, lh);
+                            }
+                        })() : (function() {
+                            {
+                                var lh = cm.setGutterMarker(n, "breakpoints",
+                                    makeMarker());
+                                return model.addBreakpoint(cm.doc, lh);
+                            }
+                        })());
+                    }
+                })();
             });
         }
     })());
@@ -96,12 +110,12 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
             }));
         evalButton.button()
             .click((function() {
-                model.beginDebugging(doc.getValue(), out.write, errorOut.write);
+                model.beginDebugging(cm.doc.getValue(), out.write, errorOut.write);
                 model.finish();
             }));
         debugButton.button()
             .click((function() {
-                return model.beginDebugging(doc.getValue(), out.write, errorOut.write);
+                return model.beginDebugging(cm.doc.getValue(), out.write, errorOut.write);
             }));
         stopButton.button(({
             "disabled": true
