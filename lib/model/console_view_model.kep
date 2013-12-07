@@ -61,6 +61,9 @@ ConsoleViewModel = function() {
     
     self.debug = ko.observable();
     
+    self.debugging = ko.computed <|\->
+        (self.debug() && !self.debug().debug.complete);
+    
     self.stack = ko.observable();
     self.environments = ko.observable();
 
@@ -69,7 +72,7 @@ ConsoleViewModel = function() {
     self.breakpoints = ko.observableArray();
     
     self.location = ko.computed <|\->
-        (self.debug() && !self.debug().debug.complete ?
+        (self.debugging() ?
             run.extract(self.debug(), context.location, null) :
             null);
     
@@ -130,18 +133,26 @@ ConsoleViewModel.prototype.selectFrame = \index, frame -> {
     this.stack(new Stack(index, this.stack().frames()));
 };
 
-ConsoleViewModel.prototype.addBreakpoint = \doc, handle ->
-    this.breakpoints.push(
-        new Breakpoint(
-            this.breakpoints().length,
-            doc,
-            handle));
+ConsoleViewModel.prototype.addBreakpoint = \doc, handle -> {
+    var b = new Breakpoint(
+        this.breakpoints().length + '',
+        doc,
+        handle);
+    
+    if (this.debugging())
+        this.debug(addBreakpoint(this.debug(), b.id, b.getImpl()));
+    
+    this.breakpoints.push(b);
+};
     
 ConsoleViewModel.prototype.removeBreakpoint = \doc, handle -> {
     var pred = \x -> x.doc === doc && x.handle === handle;
     var b = this.breakpoints().filter(pred)[0];
-    this.breakpoints.remove(pred);
     
+    if (this.debugging())
+        this.debug(removeBreakpoint(this.debug(), b.id));
+
+    this.breakpoints.remove(pred);
 };
 
 }

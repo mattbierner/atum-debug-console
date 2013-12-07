@@ -43,13 +43,16 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/breakpoi
     (ConsoleViewModel = (function() {
         var self = this;
         (self.debug = ko.observable());
+        (self.debugging = ko.computed((function() {
+            return (self.debug() && !self.debug()
+                .debug.complete);
+        })));
         (self.stack = ko.observable());
         (self.environments = ko.observable());
         (self.output = ko.observableArray());
         (self.breakpoints = ko.observableArray());
         (self.location = ko.computed((function() {
-            return ((self.debug() && !self.debug()
-                    .debug.complete) ? run.extract(self.debug(), context.location, null) :
+            return (self.debugging() ? run.extract(self.debug(), context.location, null) :
                 null);
         })));
         self.debug.subscribe((function(debug) {
@@ -107,8 +110,10 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/breakpoi
             .frames()));
     }));
     (ConsoleViewModel.prototype.addBreakpoint = (function(doc, handle) {
-        return this.breakpoints.push(new(Breakpoint)(this.breakpoints()
-            .length, doc, handle));
+        var b = new(Breakpoint)((this.breakpoints()
+            .length + ""), doc, handle);
+        if (this.debugging()) this.debug(addBreakpoint(this.debug(), b.id, b.getImpl()));
+        this.breakpoints.push(b);
     }));
     (ConsoleViewModel.prototype.removeBreakpoint = (function(doc, handle) {
         var pred = (function(x) {
@@ -116,6 +121,7 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/breakpoi
         });
         var b = this.breakpoints()
             .filter(pred)[0];
+        if (this.debugging()) this.debug(removeBreakpoint(this.debug(), b.id));
         this.breakpoints.remove(pred);
     }));
     (exports.Result = Result);

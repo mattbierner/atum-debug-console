@@ -63,7 +63,7 @@ in
  * Prevent editing while debugging.
  */
 cm.on("beforeChange", \cm, change -> {
-    if (model.debug() && !model.debug().debug.complete)
+    if (model.debugging())
         return change.cancel();
 });
 
@@ -108,18 +108,16 @@ $(function(){
     $('#right-panel')
         .tabs();
     
-    model.debug.subscribe(\x -> {
-        var disable = !x || x.debug.complete;
+    model.debugging.subscribe(\debugging -> {
+        evalButton.button('option', "disabled", debugging);
+        debugButton.button('option', "disabled", debugging);
         
-        evalButton.button('option', "disabled", !disable);
-        debugButton.button('option', "disabled", !disable);
-        
-        stopButton.button('option', "disabled", disable);
-        runButton.button('option', "disabled", disable);
-        stepButton.button('option', "disabled", disable);
-        stepOverButton.button('option', "disabled", disable);
-        stepIntoButton.button('option', "disabled", disable);
-        stepOutButton.button('option', "disabled", disable);
+        stopButton.button('option', "disabled", !debugging);
+        runButton.button('option', "disabled", !debugging);
+        stepButton.button('option', "disabled", !debugging);
+        stepOverButton.button('option', "disabled", !debugging);
+        stepIntoButton.button('option', "disabled", !debugging);
+        stepOutButton.button('option', "disabled", !debugging);
     });
     
     $("#output > ul")

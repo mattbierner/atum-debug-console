@@ -33,36 +33,39 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
         "gutters": ["breakpoints", "CodeMirror-linenumbers"]
     }));
     cm.on("gutterClick", (function() {
-        {
-            var makeMarker = (function() {
-                var marker = document.createElement("div");
-                (marker.className = "editor-breakpoint");
-                return marker;
-            });
-            return (function(cm, n) {
-                return (function() {
-                    {
-                        var info = cm.lineInfo(n);
-                        return (info.gutterMarkers ? (function() {
-                            {
-                                var lh = cm.setGutterMarker(n, "breakpoints", null);
-                                return model.removeBreakpoint(cm.doc, lh);
-                            }
-                        })() : (function() {
-                            {
-                                var lh = cm.setGutterMarker(n, "breakpoints",
-                                    makeMarker());
-                                return model.addBreakpoint(cm.doc, lh);
-                            }
-                        })());
-                    }
-                })();
-            });
-        }
-    })());
+            {
+                var makeMarker = (function() {
+                    var marker = document.createElement("div");
+                    (marker.className = "editor-breakpoint");
+                    return marker;
+                });
+                return (function(cm, n) {
+                    return (function() {
+                        {
+                            var info = cm.lineInfo(n);
+                            return (info.gutterMarkers ? (function() {
+                                    {
+                                        var lh = cm.setGutterMarker(n, "breakpoints", null);
+                                        return model.removeBreakpoint(cm.doc, lh);
+                                    }
+                                })
+                                .call(this) : (function() {
+                                    {
+                                        var lh = cm.setGutterMarker(n, "breakpoints",
+                                            makeMarker());
+                                        return model.addBreakpoint(cm.doc, lh);
+                                    }
+                                })
+                                .call(this));
+                        }
+                    })
+                        .call(this);
+                });
+            }
+        })
+        .call(this));
     cm.on("beforeChange", (function(cm, change) {
-        if ((model.debug() && !model.debug()
-            .debug.complete)) return change.cancel();
+        if (model.debugging()) return change.cancel();
     }));
     accortion_binding.init();
     (model = new(atum_debug_model.ConsoleViewModel)());
@@ -90,16 +93,15 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
             .tabs();
         $("#right-panel")
             .tabs();
-        model.debug.subscribe((function(x) {
-            var disable = (!x || x.debug.complete);
-            evalButton.button("option", "disabled", !disable);
-            debugButton.button("option", "disabled", !disable);
-            stopButton.button("option", "disabled", disable);
-            runButton.button("option", "disabled", disable);
-            stepButton.button("option", "disabled", disable);
-            stepOverButton.button("option", "disabled", disable);
-            stepIntoButton.button("option", "disabled", disable);
-            stepOutButton.button("option", "disabled", disable);
+        model.debugging.subscribe((function(debugging) {
+            evalButton.button("option", "disabled", debugging);
+            debugButton.button("option", "disabled", debugging);
+            stopButton.button("option", "disabled", !debugging);
+            runButton.button("option", "disabled", !debugging);
+            stepButton.button("option", "disabled", !debugging);
+            stepOverButton.button("option", "disabled", !debugging);
+            stepIntoButton.button("option", "disabled", !debugging);
+            stepOutButton.button("option", "disabled", !debugging);
         }));
         $("#output > ul")
             .on("accordionactivate", ".object-browser", (function(event, ui) {
