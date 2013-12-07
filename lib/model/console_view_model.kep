@@ -71,8 +71,8 @@ ConsoleViewModel = function() {
     self.environments = ko.observable();
 
     self.output = ko.observableArray();
-    
     self.breakpoints = ko.observableArray();
+    
     
     self.debug.subscribe <|\d -> {
         if (d && self.debugState() !== d.debug)
