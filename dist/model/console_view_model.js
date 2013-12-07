@@ -43,20 +43,27 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/breakpoi
     (ConsoleViewModel = (function() {
         var self = this;
         (self.debug = ko.observable());
+        (self.debugState = ko.observable());
         (self.debugging = ko.computed((function() {
-            return (self.debug() && !self.debug()
-                .debug.complete);
+            return (self.debugState() && !self.debugState()
+                .complete);
         })));
         (self.stack = ko.observable());
+        (self.location = ko.observable());
         (self.environments = ko.observable());
         (self.output = ko.observableArray());
         (self.breakpoints = ko.observableArray());
-        (self.location = ko.computed((function() {
-            return (self.debugging() ? run.extract(self.debug(), context.location, null) :
-                null);
-        })));
-        self.debug.subscribe((function(debug) {
-            self.stack((debug ? printStack(debug) : new(Stack)(0, [])));
+        self.debug.subscribe((function(d) {
+            if ((d && (self.debugState() !== d.debug))) self.debugState(d.debug);
+        }));
+        self.debugState.subscribe((function() {
+            if (self.debug()) {
+                self.stack(printStack(self.debug()));
+                self.location(run.extract(self.debug(), context.location, null));
+            } else {
+                self.stack(new(Stack)(0, []));
+                self.location(null);
+            }
         }));
         self.stack.subscribe((function(stack) {
             return (function() {
