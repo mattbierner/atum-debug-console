@@ -113,10 +113,14 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
         this.breakpoints.remove(pred);
     }));
     (ConsoleViewModel.prototype.createNewConditionalBreakpoint = (function() {
-        var b = ConditionalBreakpoint.create((this.breakpoints()
-            .length + ""), "bla");
-        this.debug(addBreakpoint(this.debug(), b.id, b.getImpl()));
-        this.breakpoints.push(b);
+        var self = this;
+        var b = ConditionalBreakpoint.create((self.breakpoints()
+            .length + ""), "");
+        b.prog.subscribe((function(prog) {
+            self.debug(addBreakpoint(removeBreakpoint(self.debug(), b.id), b.id, b.getImpl()));
+        }));
+        self.debug(addBreakpoint(self.debug(), b.id, b.getImpl()));
+        self.breakpoints.push(b);
     }));
     (ConsoleViewModel.prototype.updateBreakpoints = (function() {
         this.breakpoints.removeAll((function(x) {

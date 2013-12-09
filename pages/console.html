@@ -67,9 +67,9 @@
     
     <script type="text/html" id="breakpoint-template">
         <!-- ko if: type === 'conditional' -->
-            <li class='breakpoint' data-bind="popover: {title:'aa', container: 'body', template: 'test-t', css: 'breakpoint-editor-popover'}">
+            <li class='breakpoint popup-marker' data-bind="popover: {title:'Breakpoint', container: 'body', template: 'test-t', css: 'breakpoint-editor-popover'}">
                 <span class='breakpoint-icon'>C</span>:
-                <span data-bind='text: prog'></span>
+                <span data-bind='text: displayName'></span>
             </li>
         <!-- /ko -->
         <!-- ko if: type === 'unconditional' -->

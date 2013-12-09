@@ -142,13 +142,19 @@ ConsoleViewModel.prototype.removeBreakpoint = \doc, handle -> {
 };
 
 ConsoleViewModel.prototype.createNewConditionalBreakpoint = \ -> {
+    var self = this;
+    
     var b = ConditionalBreakpoint.create(
-        this.breakpoints().length + '',
-        "bla");
+        self.breakpoints().length + '',
+        "");
     
-    this.debug(addBreakpoint(this.debug(), b.id, b.getImpl()));
+    b.prog.subscribe(\prog -> {
+        self.debug(addBreakpoint(removeBreakpoint(self.debug(), b.id), b.id, b.getImpl()));
+
+    });
+    self.debug(addBreakpoint(self.debug(), b.id, b.getImpl()));
     
-    this.breakpoints.push(b);
+    self.breakpoints.push(b);
 };
 
 ConsoleViewModel.prototype.updateBreakpoints = \ -> {

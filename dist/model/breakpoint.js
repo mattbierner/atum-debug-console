@@ -29,13 +29,27 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/operatio
             (this.line = (ln + 1));
             return true;
         }));
-        (ConditionalBreakpoint = record.extend(Breakpoint, ["prog"], (function(id, prog) {
+        var breakpointDisplayName = (function(text) {
+            return (function() {
+                {
+                    var lines = text.trimLeft()
+                        .split("\n");
+                    return (lines.length ? lines[0] : "");
+                }
+            })
+                .call(this);
+        });
+        (ConditionalBreakpoint = record.extend(Breakpoint, ["prog", "displayName"], (function(id, prog) {
+            var self = this;
             (this.id = id);
             (this.prog = ko.observable(prog));
+            (this.displayName = ko.computed((function() {
+                return breakpointDisplayName(self.prog());
+            })));
         })));
         (ConditionalBreakpoint.prototype.type = "conditional");
         (ConditionalBreakpoint.prototype.getImpl = (function() {
-            return breakpoint.Breakpoint.create(breakpoint.conditional(evaluateInput(this.prog)));
+            return breakpoint.Breakpoint.create(breakpoint.conditional(evaluateInput(this.prog())));
         }));
         (exports.Breakpoint = Breakpoint);
         (exports.UnconditionalBreakpoint = UnconditionalBreakpoint);

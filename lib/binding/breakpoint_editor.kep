@@ -22,8 +22,7 @@ init = \ -> {
                 valueAccessor().prog(cm.getValue());
             });
             
-            $('body').on('shown', $(element), function() {
-            //    editor.setSize('100%', '100%');
+            $('body').on('shown', $(element), \() -> {
                 editor.refresh();
             });
             

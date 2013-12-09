@@ -136,6 +136,10 @@ $(function(){
         .on("accordionactivate", '.object-browser', \event, ui ->
             $('#output > ul').scrollTop($(this).offset().top));
     
+   // $('body').on('click', \e -> {
+    //    $('.popup-marker').popover('hide');
+    //});
+    
     evalButton
         .button()
         .click(\-> {

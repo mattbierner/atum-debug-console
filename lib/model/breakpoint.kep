@@ -46,17 +46,28 @@ UnconditionalBreakpoint.prototype.update = \ -> {
 
 /* Conditional Breakpoint
  ******************************************************************************/
+var breakpointDisplayName = \text -> let
+    lines =  text.trimLeft() .split('\n')
+in
+    (lines.length ? lines[0] : '');
+
+
 ConditionalBreakpoint = record.extend(Breakpoint, [
-    'prog'],
+    'prog',
+    'displayName'],
     function(id, prog) {
+        var self = this;
+        
         this.id = id;
         this.prog = ko.observable(prog);
+        this.displayName = ko.computed <|\ ->
+            breakpointDisplayName(self.prog());
     });
 
 ConditionalBreakpoint.prototype.type = 'conditional';
 
 ConditionalBreakpoint.prototype.getImpl = \ ->
     breakpoint.Breakpoint.create(
-        breakpoint.conditional(evaluateInput(this.prog)));
+        breakpoint.conditional(evaluateInput(this.prog())));
 
 }
