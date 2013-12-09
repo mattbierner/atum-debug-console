@@ -5,10 +5,10 @@ with
     
     import 'amulet/record' record,
     
-    import 'sheut/run' run,
+    import 'sheut/run' {extract},
     import 'sheut/operations/context' context,
     
-    import 'atum_debug_console/object_explorer' object_explorer{AtumObject}
+    import 'atum_debug_console/object_explorer' object_explorer
 in {
 
 var map = \f, a -> Array.prototype.map.call(a, f);
@@ -29,12 +29,12 @@ var Binding = record.declare(null, [
 /* Environment
  ******************************************************************************/
 var printBindings = \d, environment ->
-    run.extract(d,
+    extract(d,
         context.getEnvironmentBindings(environment),
         [],
         (map, \binding ->
             Binding.create(binding,
-                run.extract(d,
+                extract(d,
                     context.getEnvironmentBinding(environment, binding),
                     null,
                     (object_explorer.createForKey, binding)))));
@@ -48,7 +48,7 @@ printEnvironments = \d, env -> {
     var environment = env;
     do {
         environments.push(printFrame(d, environment));
-        environment = run.extract(d, context.getEnvironmentOuter(environment), null);
+        environment = extract(d, context.getEnvironmentOuter(environment), null);
     } while (environment);
     
     return environments;

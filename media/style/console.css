@@ -69,7 +69,7 @@ body header {
     Panes
  ---------------------------------------------------------------------------- */
 .ui-layout-pane {
-    border: none;
+    border: none !important;
 }
 
 .ui-layout-resizer {
@@ -148,6 +148,10 @@ body header {
     padding-bottom: 0;
 }
 
+.CodeMirror * {
+    box-sizing: content-box;
+}
+
 /* -----------------------------------------------------------------------------
     Workspace
  ---------------------------------------------------------------------------- */
@@ -173,7 +177,6 @@ body header {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    padding-bottom: 19px;
 }
 
 #workspace #input .CodeMirror {
@@ -185,7 +188,7 @@ body header {
     padding-bottom: 0;
 }
 
-.breakpoints {
+.editor-breakpoints {
     width: 100%;
     position: absolute;
 }
@@ -203,14 +206,12 @@ body header {
     Workspace -> Console
  ---------------------------------------------------------------------------- */
 #console {
-    box-sizing: border-box;
     border-top: 1px solid lightgray;
     
     overflow: hidden;
 }
  
 #console .controls {
-    box-sizing: border-box;
     z-index: 500;
     
     position: absolute;
@@ -230,7 +231,7 @@ body header {
     height: 100%;
     max-height: 100%;
     
-    padding-top: 18px;
+    margin-top: 18px;
 }
 
 #console #output > ul {
@@ -245,7 +246,6 @@ body header {
 
     margin: 0;
     padding: 0;
-    padding-top:18px;
     padding-bottom: 38px
 }
 
@@ -348,6 +348,7 @@ body header {
     width: 100%;
     bottom: 0;
     border-top: 1px solid lightgray;
+    background: white;
 }
 
 #interactive .input-icon {
@@ -409,14 +410,36 @@ body header {
  
 
 /* -----------------------------------------------------------------------------
+    Breakpoints
+ ---------------------------------------------------------------------------- */
+ #tab-breakpoints {
+    padding: 0;
+}
+
+.breakpoints {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.breakpoint {
+    width: 100%;
+    
+};
+ 
+
+/* -----------------------------------------------------------------------------
     
  ---------------------------------------------------------------------------- */
+button:disabled {
+    opacity: 0.50;
+}
 
 .ui-corner-all {
     border-radius: 0;
 }
 
-.ui-button {
+.debug-buttons button {
     color: black;
     border: 0;
     background: transparent;
@@ -424,19 +447,23 @@ body header {
     border: 0;
 }
 
-.ui-button.ui-state-hover .ui-icon {
+.debug-buttons button:hover {
+    opacity: 0.75;
+}
+
+.debug-buttons button:disabled {
     opacity: 0.50;
 }
 
-.ui-button-text-only .ui-button-text {
+.run-buttons button {
     padding: 0.1em 0.25em;
+    border: 0;
+    background: transparent;
 }
 
 .ui-state-default .ui-icon {
     background-image: url(/resources/jquery-ui-1.10.3/css/ui-lightness/images/ui-icons_222222_256x240.png);
 }
-
-
 
 
 /* -----------------------------------------------------------------------------
@@ -519,8 +546,46 @@ body header {
 }
 
 
- 
- 
+/* -----------------------------------------------------------------------------
+    BreakpointEditor
+ ---------------------------------------------------------------------------- */
+.breakpoint-editor-popover .popover-content {
+    margin: 0;
+    padding: 0;
+}
+
+.breakpoint-editor {
+    width: 100%;
+    position: relative;
+    
+    min-width: 256px;
+    max-width: 800px;
+    
+    min-height: 100px;
+    max-height: 300px;
+}
+
+.breakpoint-editor .CodeMirror {
+    height: auto;
+    min-height: inherit;
+    max-height: inherit;
+    width: 100%;
+}
+
+.breakpoint-editor .CodeMirror-scroll {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    
+    min-height: inherit;
+    max-height: inherit;
+    
+    overflow-y: scroll;
+    overflow-x: auto;
+}
+
+/* -----------------------------------------------------------------------------
+
+ ---------------------------------------------------------------------------- */
  
  
  

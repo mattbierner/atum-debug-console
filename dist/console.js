@@ -2,15 +2,19 @@
  * THIS FILE IS AUTO GENERATED from 'lib/console.kep'
  * DO NOT EDIT
 */
-define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/console_view_model",
-    "atum_debug_console/object_explorer", "atum_debug_console/accordion-binding",
+define(["require", "exports", "knockout-2.2.1", "atum_debug_console/binding/accordion-binding",
+    "atum_debug_console/binding/breakpoint_editor", "atum_debug_console/binding/popover-binding",
+    "atum_debug_console/model/console_view_model", "atum_debug_console/object_explorer",
     "atum_debug_console/editor/interactive"
-], (function(require, exports, ko, atum_debug_model, object_explorer, accortion_binding, interactive) {
+], (function(require, exports, ko, accordion_binding, breakpoint_editor, popover_binding, atum_debug_model,
+    object_explorer, interactive) {
     "use strict";;
     var ko = ko,
+        accordion_binding = accordion_binding,
+        breakpoint_editor = breakpoint_editor,
+        popover_binding = popover_binding,
         atum_debug_model = atum_debug_model,
         object_explorer = object_explorer,
-        accortion_binding = accortion_binding,
         interactive = interactive;;;;
     var model;
     var out = ({
@@ -30,7 +34,7 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
     var cm = CodeMirror(document.getElementById("input"), ({
         "mode": "javascript",
         "lineNumbers": true,
-        "gutters": ["breakpoints", "CodeMirror-linenumbers"]
+        "gutters": ["editor-breakpoints", "CodeMirror-linenumbers"]
     }));
     cm.on("gutterClick", (function() {
             {
@@ -45,13 +49,14 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
                             var info = cm.lineInfo(n);
                             return (info.gutterMarkers ? (function() {
                                     {
-                                        var lh = cm.setGutterMarker(n, "breakpoints", null);
+                                        var lh = cm.setGutterMarker(n, "editor-breakpoints",
+                                            null);
                                         return model.removeBreakpoint(cm.doc, lh);
                                     }
                                 })
                                 .call(this) : (function() {
                                     {
-                                        var lh = cm.setGutterMarker(n, "breakpoints",
+                                        var lh = cm.setGutterMarker(n, "editor-breakpoints",
                                             makeMarker());
                                         return model.addBreakpoint(cm.doc, lh);
                                     }
@@ -67,7 +72,12 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
     cm.on("beforeChange", (function(cm, change) {
         if (model.debugging()) return change.cancel();
     }));
-    accortion_binding.init();
+    cm.on("change", (function(cm, change) {
+        model.updateBreakpoints();
+    }));
+    accordion_binding.init();
+    popover_binding.init();
+    breakpoint_editor.init();
     (model = new(atum_debug_model.ConsoleViewModel)());
     ko.applyBindings(model);
     model.location.subscribe((function(current) {
@@ -94,14 +104,14 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
         $("#right-panel")
             .tabs();
         model.debugging.subscribe((function(debugging) {
-            evalButton.button("option", "disabled", debugging);
-            debugButton.button("option", "disabled", debugging);
-            stopButton.button("option", "disabled", !debugging);
-            runButton.button("option", "disabled", !debugging);
-            stepButton.button("option", "disabled", !debugging);
-            stepOverButton.button("option", "disabled", !debugging);
-            stepIntoButton.button("option", "disabled", !debugging);
-            stepOutButton.button("option", "disabled", !debugging);
+            evalButton.prop("disabled", debugging);
+            debugButton.prop("disabled", debugging);
+            stopButton.prop("disabled", !debugging);
+            runButton.prop("disabled", !debugging);
+            stepButton.prop("disabled", !debugging);
+            stepOverButton.prop("disabled", !debugging);
+            stepIntoButton.prop("disabled", !debugging);
+            stepOutButton.prop("disabled", !debugging);
         }));
         $("#output > ul")
             .on("accordionactivate", ".object-browser", (function(event, ui) {
@@ -119,33 +129,28 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/model/consol
             .click((function() {
                 return model.beginDebugging(cm.doc.getValue(), out.write, errorOut.write);
             }));
-        stopButton.button(({
-            "disabled": true
-        }))
+        stopButton.button()
+            .prop("disabled", true)
             .click((function(e) {
                 model.stop();
             }));
-        runButton.button(({
-            "disabled": true
-        }))
+        runButton.button()
+            .prop("disabled", true)
             .click((function(e) {
                 model.run();
             }));
-        stepButton.button(({
-            "disabled": true
-        }))
+        stepButton.button()
+            .prop("disabled", true)
             .click((function(e) {
                 model.stepOver();
             }));
-        stepIntoButton.button(({
-            "disabled": true
-        }))
+        stepIntoButton.button()
+            .prop("disabled", true)
             .click((function(e) {
                 model.stepInto();
             }));
-        stepOutButton.button(({
-            "disabled": true
-        }))
+        stepOutButton.button()
+            .prop("disabled", true)
             .click((function(e) {
                 model.stepOut();
             }));

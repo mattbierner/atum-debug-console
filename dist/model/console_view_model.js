@@ -24,9 +24,9 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
         Stack = __o1["Stack"],
         printStack = __o1["printStack"],
         __o2 = __o2,
-        Breakpoint = __o2["Breakpoint"],
-        object_explorer = object_explorer,
-        AtumObject = object_explorer["AtumObject"];
+        ConditionalBreakpoint = __o2["ConditionalBreakpoint"],
+        UnconditionalBreakpoint = __o2["UnconditionalBreakpoint"],
+        object_explorer = object_explorer;
     (Result = record.declare(null, ["value", "error"]));
     (Result.prototype.type = "result");
     (Input = record.declare(null, ["input"]));
@@ -98,7 +98,7 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
             .frames()));
     }));
     (ConsoleViewModel.prototype.addBreakpoint = (function(doc, handle) {
-        var b = new(Breakpoint)((this.breakpoints()
+        var b = UnconditionalBreakpoint.create((this.breakpoints()
             .length + ""), doc, handle);
         this.debug(addBreakpoint(this.debug(), b.id, b.getImpl()));
         this.breakpoints.push(b);
@@ -111,6 +111,17 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
             .filter(pred)[0];
         this.debug(removeBreakpoint(this.debug(), b.id));
         this.breakpoints.remove(pred);
+    }));
+    (ConsoleViewModel.prototype.createNewConditionalBreakpoint = (function() {
+        var b = ConditionalBreakpoint.create((this.breakpoints()
+            .length + ""), "bla");
+        this.debug(addBreakpoint(this.debug(), b.id, b.getImpl()));
+        this.breakpoints.push(b);
+    }));
+    (ConsoleViewModel.prototype.updateBreakpoints = (function() {
+        this.breakpoints.removeAll((function(x) {
+            return !x.update();
+        }));
     }));
     (exports.Result = Result);
     (exports.Input = Input);

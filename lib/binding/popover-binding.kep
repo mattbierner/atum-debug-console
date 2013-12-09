@@ -1,0 +1,73 @@
+package (
+    init)
+with
+    import 'knockout-2.2.1' ko
+in {
+
+static $;
+static document;
+static jQuery;
+
+var addHiddenDivToBody = function() {
+    var div = document.createElement("div");
+    div.style.display = "none";
+    document.body.appendChild(div);
+    return div;
+};
+
+init = \ -> {
+    ko.bindingHandlers.popover = {
+        'init': function(element, valueAccessor, allBindingsAccessor, viewModel) {
+            var options = ko.utils.unwrapObservable(valueAccessor());
+            
+            var temp;
+            if (options.template) {
+                temp = addHiddenDivToBody();
+                ko.renderTemplate(options.template, viewModel, {}, temp);
+                delete options.template;
+            }
+            
+            var p = $(element)
+                .popover($.extend({}, options));
+            
+            if (options.css) {
+                p.data('bs.popover')
+                    .tip()
+                    .addClass(options.css);
+            }
+            
+            if (temp) {
+                // popover.content can't be a dom element (which code mirror needs)
+                // so this ugliness adds and removes the contents manually
+                p.on('shown.bs.popover', \e -> {
+                    $(this)
+                        .data('bs.popover')
+                        .tip()
+                        .find('.popover-content')
+                        .append($(temp).contents());
+                    
+                      $(this)
+                        .data('bs.popover')
+                        .tip()
+                        .trigger(jQuery.Event('shown'));
+                })
+                .on('hidden.bs.popover', \e -> {
+                    $(temp)
+                        .append(
+                            $(this)
+                                .data('bs.popover')
+                                .tip()
+                                .find('.popover-content').contents());
+                });
+            }
+            
+            p.popover('show');
+            
+            ko.utils.domNodeDisposal.addDisposeCallback(element, \() -> {
+                $(element).popover('destroy');
+            });
+        }
+    };
+};
+
+}

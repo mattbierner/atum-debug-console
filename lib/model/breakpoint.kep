@@ -1,0 +1,62 @@
+package (
+    Breakpoint,
+    UnconditionalBreakpoint,
+    ConditionalBreakpoint)
+with
+    import 'knockout-2.2.1' ko,
+
+    import 'amulet/record' record,
+    
+    import 'sheut/operations/evaluation' {evaluateInput},
+
+    import 'sheut/breakpoint' breakpoint
+in {
+
+/* Breakpoint
+ ******************************************************************************/
+Breakpoint = record.declare(null, [
+    'id']);
+
+/* Unconditional Breakpoint
+ ******************************************************************************/
+UnconditionalBreakpoint = record.extend(Breakpoint, [
+    'doc',
+    'handle'],
+    function(id, doc, handle) {
+        this.id = id;
+        this.doc = doc;
+        this.handle = handle;
+        this.update();
+    });
+
+UnconditionalBreakpoint.prototype.type = 'unconditional';
+
+UnconditionalBreakpoint.prototype.getImpl = \ ->
+    breakpoint.Breakpoint.create(
+        breakpoint.unconditional(
+            this.doc.getLineNumber(this.handle) + 1));
+
+UnconditionalBreakpoint.prototype.update = \ -> {
+    var ln = this.doc.getLineNumber(this.handle);
+    if (ln === null)
+        return false;
+    this.line = ln + 1;
+    return true;
+};
+
+/* Conditional Breakpoint
+ ******************************************************************************/
+ConditionalBreakpoint = record.extend(Breakpoint, [
+    'prog'],
+    function(id, prog) {
+        this.id = id;
+        this.prog = ko.observable(prog);
+    });
+
+ConditionalBreakpoint.prototype.type = 'conditional';
+
+ConditionalBreakpoint.prototype.getImpl = \ ->
+    breakpoint.Breakpoint.create(
+        breakpoint.conditional(evaluateInput(this.prog)));
+
+}

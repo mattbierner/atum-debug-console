@@ -8,6 +8,9 @@
     <link type="text/css" rel="stylesheet" href="/resources/layout-default-latest.css" />
     <link type="text/css" rel="stylesheet" href="/resources/codemirror-3.14/codemirror.css" />
     
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+    
     <link type="text/css" rel="stylesheet" href="/media/style/console.css" />
 </head>
 
@@ -58,10 +61,23 @@
         <ul class='breakpoints' data-bind="template: { name: 'breakpoint-template', foreach: breakpoints }"></ul>
     </script>
     
+    <script type="text/html" id="test-t">
+        <div class='breakpoint-editor' data-bind='breakpointEditor: $data'></div>
+    </script>
+    
     <script type="text/html" id="breakpoint-template">
-        <li class='breakpoint'>
-            <div data-bind='text: id'></div>
-        </li>
+        <!-- ko if: type === 'conditional' -->
+            <li class='breakpoint' data-bind="popover: {title:'aa', container: 'body', template: 'test-t', css: 'breakpoint-editor-popover'}">
+                <span class='breakpoint-icon'>C</span>:
+                <span data-bind='text: prog'></span>
+            </li>
+        <!-- /ko -->
+        <!-- ko if: type === 'unconditional' -->
+            <li class='breakpoint'>
+                <span class='breakpoint-icon'>U</span>:
+                <span data-bind='text: line'></span>
+            </li>
+        <!-- /ko -->
     </script>
 
     <script type="text/html" id="output-template">
@@ -80,7 +96,7 @@
     
     
     
-    <header id='page-header' class='cf'>
+    <header id='page-header'>
         <div id='left-title' class='cf'>
             <a id='jakal-logo'>
                 <img src='/media/images/logo.svg' />
@@ -94,12 +110,12 @@
                 <div id='input'></div>
             </div>
             <div id='console' class='code'>
-                <div class='controls cf'>
-                    <div class='run-buttons cf'>
+                <div class='controls'>
+                    <div class='run-buttons'>
                         <button id='eval-button' title='Eval'>eval</button>
                         <button id='debug-button' title='Debug'>debug</button>
                     </div>
-                    <div class='debug-buttons cf'>
+                    <div class='debug-buttons'>
                         <button id='stop-button' title='stop'><span class="ui-icon ui-icon-stop"></span></button>
                         <button id='run-button' title='run'><span class="ui-icon ui-icon-play"></span></button>
                         <button id='step-button' title='step over'><span class="ui-icon ui-icon-arrowstop-1-e"></span></button>
@@ -111,7 +127,7 @@
                 <div id='output'>
                     <ul class='code' id='' data-bind="template: { name: 'output-template', foreach: output }"></ul>
                 </div>
-                <div id='interactive' class='cf'>
+                <div id='interactive'>
                     <div class='input-icon'>
                         <span class='ui-icon ui-icon-carat-1-e'></span>
                     </div>
@@ -157,8 +173,11 @@
             </div>
             
             <div id='tab-breakpoints'>
-                
                 <div data-bind="template: { name: 'breakpoints-template' }"></div>
+                
+                <div>
+                    <button data-bind='click: $root.createNewConditionalBreakpoint.bind($root)'>Add Conditional</button>
+                </div>
             </div>
             
         </section>
@@ -168,9 +187,13 @@
     
     <script type="application/javascript" src="/resources/require.js"></script>
     
+    
     <script type="application/javascript" src="/resources/jquery-ui-1.10.3/js/jquery-1.9.1.js"></script>
     <script type="application/javascript" src="/resources/jquery-ui-1.10.3/js/jquery-ui-1.10.3.custom.js"></script>
     <script type="application/javascript" src="/resources/jquery.layout-latest.js"></script>
+    
+    <script type="application/javascript" src="/resources/bootstrap/js/bootstrap.min.js"></script>
+    
     
     <script type="application/javascript" src="/resources/codemirror-3.14/codemirror.js"></script>
     <script type="application/javascript" src="/resources/codemirror-3.14/javascript.js"></script>
@@ -193,9 +216,7 @@
                 'knockout-2.2.1': '/resources/knockout-2.2.1'
             }
         });
-        require(['atum_debug_console/console'], function() {
-        
-        });
+        require(['atum_debug_console/console'], function() { });
     </script>
 
 </body>

@@ -39,7 +39,7 @@ create = \element, model -> {
                     model.pushResult(x, ctx, true);
                 }
             in {
-                if (model.debug()) {
+                if (model.debugState()) {
                     run.evaluate(
                         model.debug(),
                         evaluate.evaluateInput(input),

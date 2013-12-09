@@ -36,7 +36,7 @@ define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/run", "she
                                 model.pushInput(input);
                                 model.pushResult(x, ctx, true);
                             });
-                        if (model.debug()) {
+                        if (model.debugState()) {
                             run.evaluate(model.debug(), evaluate.evaluateInput(input), writeOut,
                                 writeError);
                         } else {

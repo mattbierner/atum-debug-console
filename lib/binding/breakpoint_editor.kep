@@ -1,0 +1,44 @@
+package (
+    init)
+with
+    import 'knockout-2.2.1' ko
+in {
+
+static $;
+static CodeMirror;
+
+init = \ -> {
+    ko.bindingHandlers.breakpointEditor = {
+        'init': \element, valueAccessor, allBindings, viewModel, bindingContext -> {
+            var editor = CodeMirror(element, {
+                'mode': 'javascript',
+                'lineNumbers': true,
+                'value': (valueAccessor().prog() || ""),
+                'readOnly': false,
+                'viewportMargin': Infinity
+            });
+                        
+            editor.on('change', \cm -> {
+                valueAccessor().prog(cm.getValue());
+            });
+            
+            $('body').on('shown', $(element), function() {
+            //    editor.setSize('100%', '100%');
+                editor.refresh();
+            });
+            
+            with wrapperElement = $(editor.getWrapperElement()) in {
+                ko.utils.domNodeDisposal.addDisposeCallback(element, \() -> {
+                    wrapperElement.remove();
+                });
+            }
+        },
+        'update': \element, valueAccessor, allBindings, viewModel, bindingContext -> {
+            if (!element.editor) return;
+            
+            element.editor.refresh();
+        }
+    };
+};
+
+}
