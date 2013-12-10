@@ -55,6 +55,8 @@ create = \element, model -> {
             }
         }
     });
+    
+    return interactive;
 };
 
 }

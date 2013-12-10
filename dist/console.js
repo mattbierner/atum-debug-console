@@ -3,15 +3,16 @@
  * DO NOT EDIT
 */
 define(["require", "exports", "knockout-2.2.1", "atum_debug_console/binding/accordion-binding",
-    "atum_debug_console/binding/breakpoint_editor", "atum_debug_console/binding/popover-binding",
-    "atum_debug_console/model/console_view_model", "atum_debug_console/object_explorer",
-    "atum_debug_console/editor/interactive"
-], (function(require, exports, ko, accordion_binding, breakpoint_editor, popover_binding, atum_debug_model,
-    object_explorer, interactive) {
+    "atum_debug_console/binding/breakpoint_editor", "atum_debug_console/binding/highlight_binding",
+    "atum_debug_console/binding/popover-binding", "atum_debug_console/model/console_view_model",
+    "atum_debug_console/object_explorer", "atum_debug_console/editor/interactive"
+], (function(require, exports, ko, accordion_binding, breakpoint_editor, highlight_binding, popover_binding,
+    atum_debug_model, object_explorer, interactive) {
     "use strict";;
     var ko = ko,
         accordion_binding = accordion_binding,
         breakpoint_editor = breakpoint_editor,
+        highlight_binding = highlight_binding,
         popover_binding = popover_binding,
         atum_debug_model = atum_debug_model,
         object_explorer = object_explorer,
@@ -78,6 +79,7 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/binding/acco
     accordion_binding.init();
     popover_binding.init();
     breakpoint_editor.init();
+    highlight_binding.init();
     (model = new(atum_debug_model.ConsoleViewModel)());
     ko.applyBindings(model);
     model.location.subscribe((function(current) {
@@ -88,7 +90,8 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/binding/acco
         if ((x && x.start)) cm.addLineClass((x.start.line - 1), "background", "active-line");
     }));
     $((function() {
-        interactive.create(document.getElementById("output-interactive-textarea"), model);
+        (model.interactive = interactive.create(document.getElementById("output-interactive-textarea"),
+            model));
         var evalButton = $("button#eval-button"),
             debugButton = $("button#debug-button"),
             stopButton = $("button#stop-button"),
@@ -153,6 +156,16 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/binding/acco
             .prop("disabled", true)
             .click((function(e) {
                 model.stepOut();
+            }));
+        $("#interactive-branch-button")
+            .button()
+            .click((function(e) {
+                model.interactiveBranch();
+            }));
+        $("#interactive-inject-button")
+            .button()
+            .click((function(e) {
+                model.interactiveInject();
             }));
     }));
 }))

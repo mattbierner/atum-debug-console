@@ -25,10 +25,21 @@ init = \ -> {
                 temp = addHiddenDivToBody();
                 ko.renderTemplate(options.template, viewModel, {}, temp);
                 delete options.template;
+                
+                options.html = true;
+                // insert fake content for layout.
+                options.content = \ -> $(temp).html();
             }
             
             var p = $(element)
-                .popover($.extend({}, options));
+                .popover($.extend({'placement': 'right'}, options));
+            
+            p.on('shown.bs.popover', \e -> {
+                $('.popover-marker').each(\ -> {
+                    if (this && !$(this).is(p))
+                        $(this).popover('hide');
+                });
+            });
             
             if (options.css) {
                 p.data('bs.popover')
@@ -40,10 +51,13 @@ init = \ -> {
                 // popover.content can't be a dom element (which code mirror needs)
                 // so this ugliness adds and removes the contents manually
                 p.on('shown.bs.popover', \e -> {
+                    $(this).addClass('enabled-popover');
+                    
                     $(this)
                         .data('bs.popover')
                         .tip()
                         .find('.popover-content')
+                        .empty()
                         .append($(temp).contents());
                     
                       $(this)
@@ -52,6 +66,8 @@ init = \ -> {
                         .trigger(jQuery.Event('shown'));
                 })
                 .on('hidden.bs.popover', \e -> {
+                    $(this).removeClass('enabled-popover');
+
                     $(temp)
                         .append(
                             $(this)

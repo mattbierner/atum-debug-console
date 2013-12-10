@@ -21,9 +21,24 @@ define(["require", "exports", "knockout-2.2.1"], (function(require, exports, ko)
                     (temp = addHiddenDivToBody());
                     ko.renderTemplate(options.template, viewModel, ({}), temp);
                     delete options.template;
+                    (options.html = true);
+                    (options.content = (function() {
+                        return $(temp)
+                            .html();
+                    }));
                 }
                 var p = $(element)
-                    .popover($.extend(({}), options));
+                    .popover($.extend(({
+                        "placement": "right"
+                    }), options));
+                p.on("shown.bs.popover", (function(e) {
+                    $(".popover-marker")
+                        .each((function() {
+                            if ((this && !$(this)
+                                .is(p))) $(this)
+                                .popover("hide");
+                        }));
+                }));
                 if (options.css) {
                     p.data("bs.popover")
                         .tip()
@@ -32,9 +47,12 @@ define(["require", "exports", "knockout-2.2.1"], (function(require, exports, ko)
                 if (temp) {
                     p.on("shown.bs.popover", (function(e) {
                         $(this)
+                            .addClass("enabled-popover");
+                        $(this)
                             .data("bs.popover")
                             .tip()
                             .find(".popover-content")
+                            .empty()
                             .append($(temp)
                                 .contents());
                         $(this)
@@ -43,6 +61,8 @@ define(["require", "exports", "knockout-2.2.1"], (function(require, exports, ko)
                             .trigger(jQuery.Event("shown"));
                     }))
                         .on("hidden.bs.popover", (function(e) {
+                            $(this)
+                                .removeClass("enabled-popover");
                             $(temp)
                                 .append($(this)
                                     .data("bs.popover")

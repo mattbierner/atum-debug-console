@@ -4,6 +4,7 @@ with
     
     import 'atum_debug_console/binding/accordion-binding' accordion_binding,
     import 'atum_debug_console/binding/breakpoint_editor' breakpoint_editor,
+    import 'atum_debug_console/binding/highlight_binding' highlight_binding,
     import 'atum_debug_console/binding/popover-binding' popover_binding,
     
     import 'atum_debug_console/model/console_view_model' atum_debug_model,
@@ -82,6 +83,7 @@ cm.on("change", \cm, change -> {
 accordion_binding.init();
 popover_binding.init();
 breakpoint_editor.init();
+highlight_binding.init();
 
 model = new atum_debug_model.ConsoleViewModel();
 
@@ -100,7 +102,7 @@ model.location.subscribe(\x -> {
 /* 
  ******************************************************************************/
 $(function(){
-    interactive.create(document.getElementById('output-interactive-textarea'), model);
+    model.interactive = interactive.create(document.getElementById('output-interactive-textarea'), model);
     
     var evalButton = $('button#eval-button'),
         debugButton = $('button#debug-button'),
@@ -135,10 +137,6 @@ $(function(){
     $("#output > ul")
         .on("accordionactivate", '.object-browser', \event, ui ->
             $('#output > ul').scrollTop($(this).offset().top));
-    
-   // $('body').on('click', \e -> {
-    //    $('.popup-marker').popover('hide');
-    //});
     
     evalButton
         .button()
@@ -191,6 +189,19 @@ $(function(){
         .prop('disabled', true)
         .click(function(e){
             model.stepOut();
+        });
+    
+    
+    $('#interactive-branch-button')
+        .button()
+        .click(function(e){
+            model.interactiveBranch();
+        });
+    
+    $('#interactive-inject-button')
+        .button()
+        .click(function(e){
+            model.interactiveInject();
         });
 });
 

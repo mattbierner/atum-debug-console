@@ -45,6 +45,7 @@ define(["require", "exports", "knockout-2.2.1", "sheut/debug", "sheut/run", "she
                     }
                 }
             }));
+            return interactive;
         }));
         (exports.create = create);
     }))

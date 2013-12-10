@@ -67,9 +67,11 @@
     
     <script type="text/html" id="breakpoint-template">
         <!-- ko if: type === 'conditional' -->
-            <li class='breakpoint popup-marker' data-bind="popover: {title:'Breakpoint', container: 'body', template: 'test-t', css: 'breakpoint-editor-popover'}">
-                <span class='breakpoint-icon'>C</span>:
-                <span data-bind='text: displayName'></span>
+            <li class='breakpoint'>
+                <a rel='popover' class='popover-marker' data-bind="popover: {title:'Breakpoint', container: '#container', template: 'test-t', css: 'breakpoint-editor-popover'}">
+                    <span class='breakpoint-icon'>C</span>:
+                    <span data-bind='text: displayName'></span>
+                </a>
             </li>
         <!-- /ko -->
         <!-- ko if: type === 'unconditional' -->
@@ -89,7 +91,7 @@
         <!-- ko if: type === 'input' -->
             <li class='output-value input-value'>
                 <span class='ui-icon ui-icon-carat-1-e'></span>
-                <span data-bind="text: input"></div>
+                <span data-bind="highlight: input"></div>
             </li>
         <!-- /ko -->
     </script>
@@ -127,11 +129,17 @@
                 <div id='output'>
                     <ul class='code' id='' data-bind="template: { name: 'output-template', foreach: output }"></ul>
                 </div>
-                <div id='interactive'>
-                    <div class='input-icon'>
-                        <span class='ui-icon ui-icon-carat-1-e'></span>
+                <div id='interactive' class='cf'>
+                    <div id='interactive-console'>
+                        <div class='input-icon'>
+                            <span class='ui-icon ui-icon-carat-1-e'></span>
+                        </div>
+                        <div id='output-interactive-textarea'></div>
                     </div>
-                    <div id='output-interactive-textarea'></div>
+                    <div id='output-interactive-controls'>
+                        <button id='interactive-branch-button'>Branch</button>
+                        <button id='interactive-inject-button'>Inject</button>
+                    </div>
                 </div>
             </div>
         </section>

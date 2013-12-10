@@ -1,0 +1,33 @@
+package (
+    init)
+with
+    import 'knockout-2.2.1' ko
+in {
+
+static $;
+static CodeMirror;
+
+init = \ -> {
+    ko.bindingHandlers.highlight = {
+        'init': \element, valueAccessor, allBindings, viewModel, bindingContext -> {
+            var editor = CodeMirror(element, {
+                'mode': 'javascript',
+                'lineNumbers': false,
+                'value': (valueAccessor() || ""),
+                'readOnly': true
+            });
+            
+            editor.on('change', \cm -> {
+                valueAccessor().prog(cm.getValue());
+            });
+            
+            with wrapperElement = $(editor.getWrapperElement()) in {
+                ko.utils.domNodeDisposal.addDisposeCallback(element, \() -> {
+                    wrapperElement.remove();
+                });
+            }
+        }
+    };
+};
+
+}

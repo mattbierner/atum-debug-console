@@ -291,6 +291,15 @@ body header {
     float: left;
 }
 
+.output-value.input-value .CodeMirror {
+    height: auto;
+}
+
+
+.output-value.input-value .CodeMirror-lines {
+    padding: 0;
+}
+
 /* -----------------------------------------------------------------------------
     Object Browser
  ---------------------------------------------------------------------------- */
@@ -368,6 +377,16 @@ body header {
     display: none;
 }
 
+#interactive-console {
+    float: left;
+    clear: both;
+    max-width: 100%;
+}
+
+#output-interactive-controls {
+    float: right;
+}
+
 /* -----------------------------------------------------------------------------
     Call stack
  ---------------------------------------------------------------------------- */
@@ -412,7 +431,7 @@ body header {
 /* -----------------------------------------------------------------------------
     Breakpoints
  ---------------------------------------------------------------------------- */
- #tab-breakpoints {
+#tab-breakpoints {
     padding: 0;
 }
 
@@ -424,9 +443,20 @@ body header {
 
 .breakpoint {
     width: 100%;
+}
+
+.breakpoint > a {
+    display: block;
+    width: 100%;
     
-};
- 
+    border: 1px solid transparent;
+    border-bottom: 1px solid #e3e3e3;
+}
+
+.breakpoint > a.enabled-popover {
+    border: 1px solid #e3e3e3;
+    background-color: #f5f5f5;
+}
 
 /* -----------------------------------------------------------------------------
     
@@ -552,6 +582,10 @@ button:disabled {
 .breakpoint-editor-popover .popover-content {
     margin: 0;
     padding: 0;
+}
+
+.breakpoint-editor-popover.right .arrow::after {
+    border-right-color: #f7f7f7;
 }
 
 .breakpoint-editor {
