@@ -2,28 +2,31 @@
  * THIS FILE IS AUTO GENERATED from 'lib/binding/highlight_binding.kep'
  * DO NOT EDIT
 */
-define(["require", "exports", "knockout-2.2.1"], (function(require, exports, ko) {
+define(["require", "exports"], (function(require, exports) {
     "use strict";
-    var init;
-    var ko = ko;;;
-    (init = (function() {
+    var init;;;
+    var DEFAULTS = ({
+        "mode": "javascript",
+        "lineNumbers": false,
+        "readOnly": true
+    });
+    (init = (function(ko) {
         (ko.bindingHandlers.highlight = ({
             "init": (function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-                var editor = CodeMirror(element, ({
-                    "mode": "javascript",
-                    "lineNumbers": false,
-                    "value": (valueAccessor() || ""),
-                    "readOnly": true
-                }));
-                editor.on("change", (function(cm) {
-                    valueAccessor()
-                        .prog(cm.getValue());
-                })); {
-                    var wrapperElement = $(editor.getWrapperElement());
-                    ko.utils.domNodeDisposal.addDisposeCallback(element, (function() {
-                        wrapperElement.remove();
-                    }));
-                }
+                var value = valueAccessor();
+                var options = $.extend(false, ({
+                    "value": value
+                }), DEFAULTS);
+                var editor = CodeMirror(element, options);
+                ko.utils.domNodeDisposal.addDisposeCallback(element, (function() {
+                        {
+                            var wrapperElement = $(editor.getWrapperElement());
+                            return (function() {
+                                return void wrapperElement.remove();
+                            });
+                        }
+                    })
+                    .call(this));
             })
         }));
     }));

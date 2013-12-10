@@ -246,7 +246,7 @@ body header {
 
     margin: 0;
     padding: 0;
-    padding-bottom: 38px
+    padding-bottom: 40px
 }
 
 #console #output li {
@@ -368,23 +368,29 @@ body header {
     margin-top: 2px;
 }
 
-.output-interactive-textarea {
+#output-interactive-textarea {
     overflow-y: hidden;
-    background: red;
 }
 
-.output-interactive-textarea .CodeMirror-hscrollbar {
+#output-interactive-textarea .CodeMirror-hscrollbar {
     display: none;
-}
-
-#interactive-console {
-    float: left;
-    clear: both;
-    max-width: 100%;
 }
 
 #output-interactive-controls {
     float: right;
+}
+
+#output-interactive-controls button {
+    float: left;
+    color: black;
+    border: 0;
+    border-left: 1px solid gray;
+    background: transparent;
+    margin: 0;
+    display: block;
+    padding: 0 1em;
+    font-size: 0.90em;
+    height: 20px;
 }
 
 /* -----------------------------------------------------------------------------

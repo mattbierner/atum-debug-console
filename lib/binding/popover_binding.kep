@@ -1,8 +1,6 @@
 package (
     init)
-with
-    import 'knockout-2.2.1' ko
-in {
+{
 
 static $;
 static document;
@@ -15,7 +13,7 @@ var addHiddenDivToBody = function() {
     return div;
 };
 
-init = \ -> {
+init = \ko -> {
     ko.bindingHandlers.popover = {
         'init': function(element, valueAccessor, allBindingsAccessor, viewModel) {
             var options = ko.utils.unwrapObservable(valueAccessor());

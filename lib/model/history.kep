@@ -1,0 +1,17 @@
+package (
+    State,
+    History)
+with
+    import 'amulet/record' record
+in {
+
+State = record.declare(null, [
+    'debugState']);
+
+History = record.declare(null, [
+    'states'],
+    function(states) {
+        this.states = states;
+    });
+
+}

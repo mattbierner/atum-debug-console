@@ -1,0 +1,34 @@
+package (
+    OutputValue,
+    Result,
+    Input)
+with
+    import 'amulet/record' record
+in {
+
+/**
+ * Abstract base output value
+ */
+OutputValue = record.declare(null, []);
+
+/**
+ * Output value for computation result.
+ * 
+ * @param value Computation result.
+ * @param error Did the computation error?
+ */
+Result = record.extend(OutputValue, [
+    'value',
+    'error']);
+Result.prototype.type = 'result';
+
+/**
+ * Output value for input to a computation.
+ * 
+ * @param input Text input.
+ */
+Input = record.declare(OutputValue, [
+    'input']);
+Input.prototype.type = 'input';
+
+}

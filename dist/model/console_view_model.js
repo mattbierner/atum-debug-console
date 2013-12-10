@@ -4,12 +4,12 @@
 */
 define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", "sheut/debug_state", "sheut/run",
     "sheut/state", "sheut/step", "sheut/operations/context", "sheut/operations/evaluation",
-    "atum_debug_console/model/environment", "atum_debug_console/model/stack", "atum_debug_console/model/breakpoint",
-    "atum_debug_console/object_explorer"
+    "atum_debug_console/model/console", "atum_debug_console/model/environment", "atum_debug_console/model/stack",
+    "atum_debug_console/model/breakpoint", "atum_debug_console/model/history", "atum_debug_console/object_explorer"
 ], (function(require, exports, ko, record, debug, debug_state, run, __o, step, context, evaluate, __o0, __o1, __o2,
-    object_explorer) {
+    __o3, __o4, object_explorer) {
     "use strict";
-    var Result, Input, ConsoleViewModel;
+    var ConsoleViewModel;
     var ko = ko,
         record = record,
         debug = debug,
@@ -23,19 +23,19 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
         context = context,
         evaluate = evaluate,
         __o0 = __o0,
-        printEnvironments = __o0["printEnvironments"],
+        Result = __o0["Result"],
+        Input = __o0["Input"],
         __o1 = __o1,
-        Stack = __o1["Stack"],
-        printStack = __o1["printStack"],
+        printEnvironments = __o1["printEnvironments"],
         __o2 = __o2,
-        ConditionalBreakpoint = __o2["ConditionalBreakpoint"],
-        UnconditionalBreakpoint = __o2["UnconditionalBreakpoint"],
+        Stack = __o2["Stack"],
+        printStack = __o2["printStack"],
+        __o3 = __o3,
+        ConditionalBreakpoint = __o3["ConditionalBreakpoint"],
+        UnconditionalBreakpoint = __o3["UnconditionalBreakpoint"],
+        __o4 = __o4,
+        History = __o4["History"],
         object_explorer = object_explorer;
-    (Result = record.declare(null, ["value", "error"]));
-    (Result.prototype.type = "result");
-    (Input = record.declare(null, ["input"]));
-    (Input.prototype.type = "input");
-    var Location = (function(type, value) {});
     (ConsoleViewModel = (function() {
         var self = this;
         (this.interactive = null);
@@ -47,6 +47,7 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
         (self.environments = ko.observable());
         (self.output = ko.observableArray());
         (self.breakpoints = ko.observableArray());
+        (self.history = ko.observable(new(History)()));
         self.debug.subscribe((function(d) {
             if ((d && (self.debugState() !== d.debug))) self.debugState(d.debug);
         }));
@@ -159,7 +160,5 @@ define(["require", "exports", "knockout-2.2.1", "amulet/record", "sheut/debug", 
         }
     }));
     (ConsoleViewModel.prototype.interactiveBranch = ConsoleViewModel.prototype.interactiveInject);
-    (exports.Result = Result);
-    (exports.Input = Input);
     (exports.ConsoleViewModel = ConsoleViewModel);
 }))

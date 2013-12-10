@@ -1,18 +1,17 @@
 /*
- * THIS FILE IS AUTO GENERATED from 'lib/binding/popover-binding.kep'
+ * THIS FILE IS AUTO GENERATED from 'lib/binding/popover_binding.kep'
  * DO NOT EDIT
 */
-define(["require", "exports", "knockout-2.2.1"], (function(require, exports, ko) {
+define(["require", "exports"], (function(require, exports) {
     "use strict";
-    var init;
-    var ko = ko;;;;
+    var init;;;;
     var addHiddenDivToBody = (function() {
         var div = document.createElement("div");
         (div.style.display = "none");
         document.body.appendChild(div);
         return div;
     });
-    (init = (function() {
+    (init = (function(ko) {
         (ko.bindingHandlers.popover = ({
             "init": (function(element, valueAccessor, allBindingsAccessor, viewModel) {
                 var options = ko.utils.unwrapObservable(valueAccessor());

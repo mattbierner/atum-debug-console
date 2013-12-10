@@ -2,11 +2,10 @@
  * THIS FILE IS AUTO GENERATED from 'lib/binding/breakpoint_editor.kep'
  * DO NOT EDIT
 */
-define(["require", "exports", "knockout-2.2.1"], (function(require, exports, ko) {
+define(["require", "exports"], (function(require, exports) {
     "use strict";
-    var init;
-    var ko = ko;;;
-    (init = (function() {
+    var init;;;
+    (init = (function(ko) {
         (ko.bindingHandlers.breakpointEditor = ({
             "init": (function(element, valueAccessor, allBindings, viewModel, bindingContext) {
                 var editor = CodeMirror(element, ({
@@ -18,16 +17,16 @@ define(["require", "exports", "knockout-2.2.1"], (function(require, exports, ko)
                     "viewportMargin": Infinity
                 }));
                 editor.on("change", (function(cm) {
-                    valueAccessor()
+                    return void valueAccessor()
                         .prog(cm.getValue());
                 }));
                 $("body")
                     .on("shown", $(element), (function() {
-                        editor.refresh();
+                        return void editor.refresh();
                     })); {
                         var wrapperElement = $(editor.getWrapperElement());
                         ko.utils.domNodeDisposal.addDisposeCallback(element, (function() {
-                            wrapperElement.remove();
+                            return void wrapperElement.remove();
                         }));
                 }
             }),

@@ -1,15 +1,14 @@
 /*
- * THIS FILE IS AUTO GENERATED from 'lib/binding/accordion-binding.kep'
+ * THIS FILE IS AUTO GENERATED from 'lib/binding/accordion_binding.kep'
  * DO NOT EDIT
 */
-define(["require", "exports", "knockout-2.2.1"], (function(require, exports, ko) {
+define(["require", "exports"], (function(require, exports) {
     "use strict";
-    var init;
-    var ko = ko;;
-    (init = (function() {
+    var init;;
+    (init = (function(ko) {
         (ko.bindingHandlers.accordion = ({
             "init": (function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-                $(element)
+                return void $(element)
                     .accordion(({
                         "collapsible": true,
                         "animate": 100,
@@ -18,7 +17,7 @@ define(["require", "exports", "knockout-2.2.1"], (function(require, exports, ko)
                     }));
             }),
             "update": (function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-                $(element)
+                return void $(element)
                     .accordion("refresh");
             })
         }));

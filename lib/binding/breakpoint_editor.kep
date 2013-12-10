@@ -1,13 +1,14 @@
+/**
+ * @fileOverview Knockout binding for editing a breakpoint
+ */
 package (
     init)
-with
-    import 'knockout-2.2.1' ko
-in {
+{
 
 static $;
 static CodeMirror;
 
-init = \ -> {
+init = \ko -> {
     ko.bindingHandlers.breakpointEditor = {
         'init': \element, valueAccessor, allBindings, viewModel, bindingContext -> {
             var editor = CodeMirror(element, {
@@ -17,21 +18,19 @@ init = \ -> {
                 'readOnly': false,
                 'viewportMargin': Infinity
             });
-                        
-            editor.on('change', \cm -> {
-                valueAccessor().prog(cm.getValue());
-            });
             
-            $('body').on('shown', $(element), \() -> {
-                editor.refresh();
-            });
+            editor.on('change', \cm -> void
+                valueAccessor().prog(cm.getValue()));
+            
+            $('body').on('shown', $(element), \() -> void
+                editor.refresh());
             
             with wrapperElement = $(editor.getWrapperElement()) in {
-                ko.utils.domNodeDisposal.addDisposeCallback(element, \() -> {
-                    wrapperElement.remove();
-                });
+                ko.utils.domNodeDisposal.addDisposeCallback(element, \() -> void
+                    wrapperElement.remove());
             }
         },
+        
         'update': \element, valueAccessor, allBindings, viewModel, bindingContext -> {
             if (!element.editor) return;
             

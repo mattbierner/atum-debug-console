@@ -1,7 +1,4 @@
 package (
-    Result,
-    Input,
-    
     ConsoleViewModel)
 with
     import 'knockout-2.2.1' ko,
@@ -17,31 +14,15 @@ with
     import 'sheut/operations/context' context,
     import 'sheut/operations/evaluation' evaluate,
 
+    import 'atum_debug_console/model/console' {Result, Input},
+
     import 'atum_debug_console/model/environment' {printEnvironments},
     import 'atum_debug_console/model/stack' {Stack, printStack},
     import 'atum_debug_console/model/breakpoint' {ConditionalBreakpoint, UnconditionalBreakpoint},
+    import 'atum_debug_console/model/history' {History},
 
     import 'atum_debug_console/object_explorer' object_explorer
 in {
-
-/* Console
- ******************************************************************************/
-Result = record.declare(null, [
-    'value',
-    'error']);
-
-Result.prototype.type = 'result';
-
-Input = record.declare(null, [
-    'input']);
-
-Input.prototype.type = 'input';
-
-/* Location
- ******************************************************************************/
-var Location = function(type, value) {
-    
-};
 
 /* ConsoleViewModel
  ******************************************************************************/
@@ -62,7 +43,7 @@ ConsoleViewModel = function() {
 
     self.output = ko.observableArray();
     self.breakpoints = ko.observableArray();
-    
+    self.history = ko.observable(new History);
     
     self.debug.subscribe <|\d -> {
         if (d && self.debugState() !== d.debug)

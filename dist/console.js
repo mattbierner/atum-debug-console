@@ -2,12 +2,12 @@
  * THIS FILE IS AUTO GENERATED from 'lib/console.kep'
  * DO NOT EDIT
 */
-define(["require", "exports", "knockout-2.2.1", "atum_debug_console/binding/accordion-binding",
+define(["require", "exports", "knockout-2.2.1", "atum_debug_console/binding/accordion_binding",
     "atum_debug_console/binding/breakpoint_editor", "atum_debug_console/binding/highlight_binding",
-    "atum_debug_console/binding/popover-binding", "atum_debug_console/model/console_view_model",
-    "atum_debug_console/object_explorer", "atum_debug_console/editor/interactive"
+    "atum_debug_console/binding/popover_binding", "atum_debug_console/model/console_view_model",
+    "atum_debug_console/editor/interactive"
 ], (function(require, exports, ko, accordion_binding, breakpoint_editor, highlight_binding, popover_binding,
-    atum_debug_model, object_explorer, interactive) {
+    atum_debug_model, interactive) {
     "use strict";;
     var ko = ko,
         accordion_binding = accordion_binding,
@@ -15,7 +15,6 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/binding/acco
         highlight_binding = highlight_binding,
         popover_binding = popover_binding,
         atum_debug_model = atum_debug_model,
-        object_explorer = object_explorer,
         interactive = interactive;;;;
     var model;
     var out = ({
@@ -76,10 +75,10 @@ define(["require", "exports", "knockout-2.2.1", "atum_debug_console/binding/acco
     cm.on("change", (function(cm, change) {
         model.updateBreakpoints();
     }));
-    accordion_binding.init();
-    popover_binding.init();
-    breakpoint_editor.init();
-    highlight_binding.init();
+    accordion_binding.init(ko);
+    popover_binding.init(ko);
+    breakpoint_editor.init(ko);
+    highlight_binding.init(ko);
     (model = new(atum_debug_model.ConsoleViewModel)());
     ko.applyBindings(model);
     model.location.subscribe((function(current) {

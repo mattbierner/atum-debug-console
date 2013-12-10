@@ -2,13 +2,12 @@ package ()
 with
     import 'knockout-2.2.1' ko,
     
-    import 'atum_debug_console/binding/accordion-binding' accordion_binding,
+    import 'atum_debug_console/binding/accordion_binding' accordion_binding,
     import 'atum_debug_console/binding/breakpoint_editor' breakpoint_editor,
     import 'atum_debug_console/binding/highlight_binding' highlight_binding,
-    import 'atum_debug_console/binding/popover-binding' popover_binding,
+    import 'atum_debug_console/binding/popover_binding' popover_binding,
     
     import 'atum_debug_console/model/console_view_model' atum_debug_model,
-    import 'atum_debug_console/object_explorer' object_explorer,
     import 'atum_debug_console/editor/interactive' interactive
 in {
 
@@ -80,10 +79,10 @@ cm.on("change", \cm, change -> {
 
 /* 
  ******************************************************************************/
-accordion_binding.init();
-popover_binding.init();
-breakpoint_editor.init();
-highlight_binding.init();
+accordion_binding.init(ko);
+popover_binding.init(ko);
+breakpoint_editor.init(ko);
+highlight_binding.init(ko);
 
 model = new atum_debug_model.ConsoleViewModel();
 

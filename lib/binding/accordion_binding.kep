@@ -1,0 +1,25 @@
+/**
+ * @fileOverview jQuery accordion Knockout binding.
+ */
+package (
+    init)
+{
+
+static $;
+
+init = \ko -> {
+    ko.bindingHandlers.accordion = {
+        'init': \element, valueAccessor, allBindings, viewModel, bindingContext -> void
+            $(element).accordion({
+                'collapsible': true,
+                'animate': 100,
+                'heightStyle': "content",
+                'active': false
+            }),
+        
+        'update': \element, valueAccessor, allBindings, viewModel, bindingContext -> void
+            $(element).accordion('refresh')
+    };
+};
+
+}

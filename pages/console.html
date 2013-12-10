@@ -16,8 +16,8 @@
 
 <body lang="en">
     <script type="text/html" id="object-child-template">
-        <div class='object-browser' data-bind="css: 'type-' + value().type(), accordion: true" >
-            <h3 class='object-value' data-bind="click: value().getChildren.bind(value()), css: { 'ui-state-disabled': !value().isObject() }">
+        <div class='object-browser' data-bind="css: 'type-' + value().type, accordion: true" >
+            <h3 class='object-value' data-bind="click: value().getChildren.bind(value()), css: { 'ui-state-disabled': !value().isObject }">
                 <span class='child-key-label' data-bind='text: key'></span>
                 <span class='value-label' data-bind='text: value().displayValue'></span>
             </h3>
@@ -28,8 +28,8 @@
     </script>
     
     <script type="text/html" id="object-template">
-        <div class='object-browser' data-bind="css: 'type-' + type(), accordion: true" >
-            <h3 class='object-value value-label' data-bind="text: displayValue, click: getChildren, css: { 'ui-state-disabled': !isObject() }"></h3>
+        <div class='object-browser' data-bind="css: 'type-' + type, accordion: true" >
+            <h3 class='object-value value-label' data-bind="text: displayValue, click: getChildren, css: { 'ui-state-disabled': !isObject }"></h3>
             <div data-bind="foreach: { data: children }">
                 <div class='child-value' data-bind="template: { name: 'object-child-template'}"></div>
             </div>
@@ -134,12 +134,14 @@
                         <div class='input-icon'>
                             <span class='ui-icon ui-icon-carat-1-e'></span>
                         </div>
-                        <div id='output-interactive-textarea'></div>
+                        <div id='output-interactive-textarea'>
+                             <div id='output-interactive-controls'>
+                                <button id='interactive-branch-button'>Branch</button>
+                                <button id='interactive-inject-button'>Inject</button>
+                            </div>
+                        </div>
                     </div>
-                    <div id='output-interactive-controls'>
-                        <button id='interactive-branch-button'>Branch</button>
-                        <button id='interactive-inject-button'>Inject</button>
-                    </div>
+                   
                 </div>
             </div>
         </section>
